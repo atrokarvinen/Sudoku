@@ -1,4 +1,4 @@
-import CellType from "../models/CellType";
+import CellType from "../../models/CellType";
 import "./Grid.css";
 
 interface CellProps {
@@ -14,9 +14,9 @@ interface CellProps {
 }
 
 export default function Cell(props: CellProps) {
-  const { number, isUserFilled, notes, row, column } = props;
+  const { number, isUserFilled, row, column } = props;
 
-  const numberColor = isUserFilled ? "blue" : "black";
+  const numberStyle = isUserFilled ? "user-filled" : "pre-filled";
   // const noteNumbers = notes ?? [];
   // const hasNumber = number !== undefined;
   const enforcedLines = [3, 6];
@@ -49,8 +49,7 @@ export default function Cell(props: CellProps) {
       {/* <button className="cell__button" type="button" onClick={() => props.cellClicked({ ...props })}>
         <span style={{ color: numberColor }}>{number}</span>
       </button> */}
-      <input className="cell__textbox"
-        
+      <input className={`cell__textbox ${numberStyle}`}
         type="text"
         value={number}
         onChange={(e) => handleCellTextChanged(e.target.value)}

@@ -1,17 +1,17 @@
-import Row from "./RowType";
+import CellType from "./CellType";
 
-export default interface SudokuGrid {
-    rows: Row[]
+export default interface GridType {
+    cells: CellType[][]
 }
 
-export const EmptySudokuGrid = (): SudokuGrid => {
-    const sudokuGrid: SudokuGrid = { rows: [] };
+export const EmptySudokuGrid = (): GridType => {
+    const sudokuGrid: GridType = { cells: [] };
     for (let row = 0; row < 9; row++) {
-      const sudokuRow: Row = { cells: [] };
+      const sudokuRow: CellType[] = [];
       for (let column = 0; column < 9; column++) {
-        sudokuRow.cells.push({ row: row, column: column });
+        sudokuRow.push({ row: row, column: column });
       }
-      sudokuGrid.rows.push(sudokuRow);
+      sudokuGrid.cells.push(sudokuRow);
     }
 
     return sudokuGrid;

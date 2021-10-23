@@ -1,4 +1,4 @@
-export default interface Cell {
+export default interface CellType {
   row: number;
   column: number;
 

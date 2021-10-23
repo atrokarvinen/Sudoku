@@ -1,28 +1,43 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sudoku.Web.Controllers
 {
-    public class SudokuController
+    [ApiController]
+    [Route("[controller]")]
+    public class SudokuController : ControllerBase
     {
-        public void StartGame() { }
-        public void QuitGame() { }
+        //public void StartGame() { }
+        //public void QuitGame() { }
 
-        public void SaveGame() { }
-        public void LoadGame() { }
+        [HttpPost("savegame")]
+        [EnableCors]
+        public IActionResult SaveGame()
+        {
+            return Ok();
+        }
 
-        public void Undo() { }
-        public void Redo() { }
+        [HttpGet("loadgame")]
+        [EnableCors]
+        public IActionResult LoadGame()
+        {
+            return Ok();
+        }
 
-        #region New game creation
+        //public void Undo() { }
+        //public void Redo() { }
 
-        public void CreateNewGame() { }
-        public void AddNumber(int row, int column, int number) { }
-        public void AddNoteNumber(int row, int column, int number) { }
+        //#region New game creation
 
-        #endregion
+        //public void CreateNewGame() { }
+        //public void AddNumber(int row, int column, int number) { }
+        //public void AddNoteNumber(int row, int column, int number) { }
+
+        //#endregion
 
     }
 }

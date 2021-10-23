@@ -1,0 +1,8 @@
+.menu {
+    border: black 1px solid;
+}
+
+.menu__buttons {
+    display: flex;
+    flex-direction: column;
+}
