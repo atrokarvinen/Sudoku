@@ -5,6 +5,9 @@ import * as React from "react";
 export interface MenuProps {
     saveGame: () => void
     loadGame: () => void
+    emptySudoku: () => void
+    solveNextStep: () => void
+    solve: () => void
 }
 
 export default function Menu(props: MenuProps) {
@@ -13,6 +16,9 @@ export default function Menu(props: MenuProps) {
       <div className="menu__buttons">
         <button onClick={props.saveGame}>Save game</button>
         <button onClick={props.loadGame}>Load game</button>
+        <button onClick={props.emptySudoku}>Empty sudoku</button>
+        <button onClick={props.solveNextStep}>Solve next step</button>
+        <button onClick={props.solve}>Solve</button>
       </div>
     </div>
   );

@@ -4,12 +4,14 @@ import Menu from "./components/Menu/Menu";
 import SudokuGame from "./components/SudokuGame/SudokuGame";
 import React from "react";
 import GridType, { EmptySudokuGrid } from "./models/GripType";
+import CellType from "./models/CellType";
 
 function App() {
   const backendUrl = "https://localhost:44340";
   const controllerName = "Sudoku";
   const SAVE_GAME_URL = `${backendUrl}/${controllerName}/savegame`;
   const LOAD_GAME_URL = `${backendUrl}/${controllerName}/loadgame`;
+  const SOLVE_NEXT_STEP_URL = `${backendUrl}/${controllerName}/solve-next-step`;
 
   const [sudokuState, setSudokuState] = React.useState<GridType>(
     EmptySudokuGrid()
@@ -38,16 +40,53 @@ function App() {
     fetch(LOAD_GAME_URL)
       .then((response: Response) => response.json())
       .then((loadedSudoku: GridType) => {
-        console.log('Loaded game successfully.')
-        setSudokuState(loadedSudoku)
+        console.log("Loaded game successfully.");
+        setSudokuState(loadedSudoku);
       })
       .catch((reason) => console.log(reason));
+  };
+
+  const emptySudoku = () => {
+    setSudokuState(EmptySudokuGrid());
+  };
+
+  const solveNextStep = () => {
+    console.log("Solving next step of the sudoku...");
+    const sudokuJson = JSON.stringify(sudokuState);
+    fetch(SOLVE_NEXT_STEP_URL, {
+      body: sudokuJson,
+      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+    })
+      .then((response: Response) => response.json())
+      .then((solvedCell: CellType) => {
+        const { row, column, number } = solvedCell;
+        console.log(
+          `Solved step successfully. Next step: (${column}, ${row}) = ${number}`
+        );
+        const newSudokuState = { ...sudokuState };
+
+        newSudokuState.cells[row][column].number = number;
+
+        setSudokuState(newSudokuState);
+      })
+      .catch((reason) => console.log(reason));
+  };
+
+  const solve = () => {
+    console.log("Solving the sudoku...");
   };
 
   return (
     <Layout>
       <SudokuGame sudokuState={sudokuState} setSudokuState={setSudokuState} />
-      <Menu saveGame={saveGame} loadGame={loadGame} />
+      <Menu
+        saveGame={saveGame}
+        loadGame={loadGame}
+        emptySudoku={emptySudoku}
+        solveNextStep={solveNextStep}
+        solve={solve}
+      />
     </Layout>
   );
 }

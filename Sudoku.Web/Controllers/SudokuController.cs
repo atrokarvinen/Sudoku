@@ -6,6 +6,7 @@ using Sudoku.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Sudoku.Web.Controllers
@@ -19,6 +20,12 @@ namespace Sudoku.Web.Controllers
         public SudokuController(ISudokuProvider sudokuProvider)
         {
             _sudokuProvider = sudokuProvider;
+
+            //HttpClient httpClient = new HttpClient();
+            //var result = httpClient.GetAsync("https://www.sudokuweb.org/").Result;
+            //string contentString = result.Content.ReadAsStringAsync().Result;
+            //System.IO.File.Create("Test.txt").Close();
+            //System.IO.File.WriteAllText("Test.txt", contentString);
         }
 
         //public void StartGame() { }
@@ -51,6 +58,13 @@ namespace Sudoku.Web.Controllers
         public ActionResult<Grid> LoadGame()
         {
             return _sudokuProvider.LoadLatestSudoku().Grid;
+        }
+
+        [HttpPost("solve-next-step")]
+        [EnableCors]
+        public ActionResult<Cell> SolveNextStep([FromBody] Grid sudoku)
+        {
+            return new Cell(1,1, new Random().Next(9));
         }
 
         //public void Undo() { }

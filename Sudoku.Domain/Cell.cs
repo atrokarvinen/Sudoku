@@ -12,6 +12,18 @@ namespace Sudoku.Domain
         public int Column { get; set; }
         public int? Number { get; set; }
 
+        public Cell()
+        {
+
+        }
+
+        public Cell(int row, int column, int number)
+        {
+            Row = row;
+            Column = column;
+            Number = number;
+        }
+
         public override string ToString()
         {
             return $"({Column}, {Row}) = {Number?.ToString() ?? "-"}";
