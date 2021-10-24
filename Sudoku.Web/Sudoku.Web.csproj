@@ -12,4 +12,8 @@
     <Folder Include="ReactClientApp\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sudoku.Services\Sudoku.Services.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -3,7 +3,7 @@ export default interface CellType {
   column: number;
 
   number?: number;
-  isPrefilled?: boolean;
+  // isPrefilled?: boolean;
 
-  notes?: number[];
+  // notes?: number[];
 }

@@ -1,14 +1,15 @@
 import * as React from "react";
 import CellType from "../../models/CellType";
-import GridType, { EmptySudokuGrid } from "../../models/GripType";
+import GridType from "../../models/GripType";
 import Grid from "../SudokuGrid/Grid";
 
-export interface SudokuGameProps {}
+export interface SudokuGameProps {
+  sudokuState: GridType;
+  setSudokuState: (sudokuState: GridType) => void;
+}
 
 export function SudokuGame(props: SudokuGameProps) {
-  const [sudokuState, setSudokuState] = React.useState<GridType>(
-    EmptySudokuGrid()
-  );
+  const { sudokuState, setSudokuState } = props;
   const [selectedCell, setSelectedCell] = React.useState<CellType | undefined>({
     row: 0,
     column: 0,

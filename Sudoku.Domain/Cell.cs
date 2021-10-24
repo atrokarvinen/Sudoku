@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Sudoku.Domain
 {
-    class Cell
+    public class Cell
     {
+        public int Row { get; set; }
+        public int Column { get; set; }
+        public int? Number { get; set; }
+
+        public override string ToString()
+        {
+            return $"({Column}, {Row}) = {Number?.ToString() ?? "-"}";
+        }
     }
 }
