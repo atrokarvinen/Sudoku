@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Sudoku.Services
 {
-    public interface ISolver
+    public interface ISudokuSolver
     {
         public Grid Solve(Sudoku.Domain.Sudoku sudoku);
-
+        public Cell SolveNextStep(Grid sudoku);
     }
 }

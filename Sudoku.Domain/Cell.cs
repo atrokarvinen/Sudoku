@@ -17,7 +17,7 @@ namespace Sudoku.Domain
 
         }
 
-        public Cell(int row, int column, int number)
+        public Cell(int row, int column, int? number)
         {
             Row = row;
             Column = column;

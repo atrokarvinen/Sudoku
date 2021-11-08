@@ -43,6 +43,7 @@ namespace Sudoku.Web
             });
 
             services.AddSingleton<ISudokuProvider, SudokuFileProvider>();
+            services.AddSingleton<ISudokuSolver, SudokuSolver>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

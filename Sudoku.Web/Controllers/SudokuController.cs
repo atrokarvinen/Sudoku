@@ -15,11 +15,13 @@ namespace Sudoku.Web.Controllers
     [Route("[controller]")]
     public class SudokuController : ControllerBase
     {
-        ISudokuProvider _sudokuProvider;
+        readonly ISudokuProvider _sudokuProvider;
+        readonly ISudokuSolver _sudokuSolver;
 
-        public SudokuController(ISudokuProvider sudokuProvider)
+        public SudokuController(ISudokuProvider sudokuProvider, ISudokuSolver sudokuSolver)
         {
             _sudokuProvider = sudokuProvider;
+            _sudokuSolver = sudokuSolver;
 
             //HttpClient httpClient = new HttpClient();
             //var result = httpClient.GetAsync("https://www.sudokuweb.org/").Result;
@@ -64,7 +66,7 @@ namespace Sudoku.Web.Controllers
         [EnableCors]
         public ActionResult<Cell> SolveNextStep([FromBody] Grid sudoku)
         {
-            return new Cell(1,1, new Random().Next(9));
+            return _sudokuSolver.SolveNextStep(sudoku);
         }
 
         //public void Undo() { }
