@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Sudoku.Domain;
 using Sudoku.Services;
+using Sudoku.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace Sudoku.Web.Controllers
     {
         readonly ISudokuProvider _sudokuProvider;
         readonly ISudokuSolver _sudokuSolver;
+
+        ApplicationConfiguration _appConfig = new ApplicationConfiguration();
 
         public SudokuController(ISudokuProvider sudokuProvider, ISudokuSolver sudokuSolver)
         {
@@ -44,22 +47,24 @@ namespace Sudoku.Web.Controllers
         [EnableCors]
         public IActionResult SaveGame([FromBody] Grid sudoku)
         {
-            _sudokuProvider.SaveSudoku(new Domain.Sudoku() { Grid = sudoku });
+            Domain.Sudoku sudokuToSave = new Domain.Sudoku() { Grid = sudoku };
+
+            _sudokuProvider.SaveSudoku(sudokuToSave, _appConfig.SaveFolder);
             return Ok();
         }
 
         [HttpGet("loadgame/{gameName}")]
         [EnableCors]
-        public ActionResult<Domain.Sudoku> LoadGame(string gameName)
+        public ActionResult<Domain.Sudoku> LoadGame(string gameFile)
         {
-            return _sudokuProvider.LoadSudoku(gameName);
+            return _sudokuProvider.LoadSudoku(gameFile);
         }
 
         [HttpGet("loadgame")]
         [EnableCors]
         public ActionResult<Grid> LoadGame()
         {
-            return _sudokuProvider.LoadLatestSudoku().Grid;
+            return _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
         }
 
         [HttpPost("solve-next-step")]

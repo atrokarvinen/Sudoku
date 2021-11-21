@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Sudoku.Domain
 {
     public class Grid
     {
-        private const string EmptyCellIdentified = "-";
+        private const string EmptyCellIdentifier = "-";
 
         public Cell[][] Cells { get; set; }
 
@@ -32,7 +33,7 @@ namespace Sudoku.Domain
                 for (int column = 0; column < rowCount; column++)
                 {
                     string cellNumberStr = cellsText[row * rowCount + column];
-                    int? number = cellNumberStr == EmptyCellIdentified ? null : int.Parse(cellNumberStr);
+                    int? number = cellNumberStr == EmptyCellIdentifier ? null : int.Parse(cellNumberStr);
                     cells[row][column] = new Cell(row, column, number);
                 }
             }
@@ -42,12 +43,11 @@ namespace Sudoku.Domain
 
         public string ShowAsText()
         {
-            return string.Join(",", 
-                Cells.Select(row =>
-                    row.Select(cell => 
-                        cell.Number?.ToString() ?? EmptyCellIdentified)
-                    )
-                );
+            List<string> numbers = Cells.SelectMany(row => row.Select(cell => CellToSudokuSymbol(cell))).ToList();
+            return string.Join(",", numbers);
         }
+
+        private string CellToSudokuSymbol(Cell cell) => NullableIntToSudokuSymbol(cell.Number);
+        private string NullableIntToSudokuSymbol(int? number) => number?.ToString() ?? EmptyCellIdentifier;
     }
 }

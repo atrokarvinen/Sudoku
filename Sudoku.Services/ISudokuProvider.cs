@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sudoku.Services
+﻿namespace Sudoku.Services
 {
     public interface ISudokuProvider
     {
-        public void SaveSudoku(Domain.Sudoku sudoku);
-        
-        public Domain.Sudoku LoadSudoku(string gameName);
-        public Domain.Sudoku LoadLatestSudoku();
+        public void SaveSudoku(Domain.Sudoku sudoku, string path);
+
+        public Domain.Sudoku LoadSudoku(string gameFile);
+        public Domain.Sudoku LoadLatestSudoku(string folder);
     }
 }
