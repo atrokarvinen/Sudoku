@@ -42,6 +42,7 @@ namespace Sudoku.Web
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sudoku.Web", Version = "v1" });
             });
 
+            services.AddSingleton<ISudokuRules, StandardSudokuRules>();
             services.AddSingleton<ISudokuProvider, SudokuFileProvider>();
             services.AddSingleton<ISudokuSolver, SudokuSolver>();
         }

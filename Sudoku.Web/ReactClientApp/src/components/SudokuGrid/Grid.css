@@ -1,42 +1,100 @@
 .sudoku-row {
-    display: flex;
+  display: flex;
 }
 
 .cell {
-    border: solid black 1px;
-    width: 50px;
-    height: 50px;
+  border: solid black 1px;
+  width: 50px;
+  height: 50px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
 }
 
 .cell.row-enforced {
-    border-top: solid black 7px;
+  border-top: solid black 7px;
 }
 
 .cell.column-enforced {
-    border-left: solid black 3px;
+  border-left: solid black 3px;
 }
 
 .cell__button {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .cell__textbox {
-    width: 100%;
-    height: 100%;
-    font-weight: bold;
-    font-size: 2rem;
-    text-align: center;
+  width: 100%;
+  height: 100%;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
 }
 
 .cell__textbox.user-filled {
-    color: blue;
+  color: blue;
 }
 
 .cell__textbox.pre-filled {
-    color: black;
+  color: black;
+}
+
+.cell-notes {
+  position: absolute;
+  z-index: 1;
+
+  display: grid;
+
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
+  grid-template-areas: 
+    "number1 number2 number3"
+    "number4 number5 number6"
+    "number7 number8 number9";
+
+  justify-content: space-between;
+  align-content: space-between;
+
+  width: 100%;
+  height: 100%;
+}
+
+.note-number-1 {
+  grid-area: number1;
+}
+
+.note-number-2 {
+  grid-area: number2;
+}
+
+.note-number-3 {
+  grid-area: number3;
+}
+
+.note-number-4 {
+  grid-area: number4;
+}
+
+.note-number-5 {
+  grid-area: number5;
+}
+
+.note-number-6 {
+  grid-area: number6;
+}
+
+.note-number-7 {
+  grid-area: number7;
+}
+
+.note-number-8 {
+  grid-area: number8;
+}
+
+.note-number-9 {
+  grid-area: number9;
 }

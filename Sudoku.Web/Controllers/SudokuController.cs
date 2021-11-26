@@ -74,6 +74,13 @@ namespace Sudoku.Web.Controllers
             return _sudokuSolver.SolveNextStep(sudoku);
         }
 
+        [HttpPost("quick-solve-notes")]
+        [EnableCors]
+        public ActionResult<Grid> QuickSolveNotes([FromBody] Grid sudoku)
+        {
+            return _sudokuSolver.QuickSolveNotes(sudoku);
+        }
+
         //public void Undo() { }
         //public void Redo() { }
 

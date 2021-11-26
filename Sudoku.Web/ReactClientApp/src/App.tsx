@@ -12,6 +12,7 @@ function App() {
   const SAVE_GAME_URL = `${backendUrl}/${controllerName}/savegame`;
   const LOAD_GAME_URL = `${backendUrl}/${controllerName}/loadgame`;
   const SOLVE_NEXT_STEP_URL = `${backendUrl}/${controllerName}/solve-next-step`;
+  const QUICK_SOLVE_NOTES = `${backendUrl}/${controllerName}/quick-solve-notes`;
 
   const [sudokuState, setSudokuState] = React.useState<GridType>(
     EmptySudokuGrid()
@@ -56,7 +57,7 @@ function App() {
     fetch(SOLVE_NEXT_STEP_URL, {
       body: sudokuJson,
       headers: { "Content-Type": "application/json" },
-      method: 'POST',
+      method: "POST",
     })
       .then((response: Response) => response.json())
       .then((solvedCell: CellType) => {
@@ -77,6 +78,20 @@ function App() {
     console.log("Solving the sudoku...");
   };
 
+  const quickSolveNotes = () => {
+    const sudokuJson = JSON.stringify(sudokuState);
+    fetch(QUICK_SOLVE_NOTES, {
+      body: sudokuJson,
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+    })
+      .then((response: Response) => response.json())
+      .then((grid: GridType) => {
+        setSudokuState(grid);
+      })
+      .catch((reason) => console.log(reason));
+  };
+
   return (
     <Layout>
       <SudokuGame sudokuState={sudokuState} setSudokuState={setSudokuState} />
@@ -86,6 +101,7 @@ function App() {
         emptySudoku={emptySudoku}
         solveNextStep={solveNextStep}
         solve={solve}
+        quickSolveNotes={quickSolveNotes}
       />
     </Layout>
   );

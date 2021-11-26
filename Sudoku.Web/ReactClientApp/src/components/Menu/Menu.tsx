@@ -8,6 +8,7 @@ export interface MenuProps {
     emptySudoku: () => void
     solveNextStep: () => void
     solve: () => void
+    quickSolveNotes: () => void
 }
 
 export default function Menu(props: MenuProps) {
@@ -19,6 +20,7 @@ export default function Menu(props: MenuProps) {
         <button onClick={props.emptySudoku}>Empty sudoku</button>
         <button onClick={props.solveNextStep}>Solve next step</button>
         <button onClick={props.solve}>Solve</button>
+        <button onClick={props.quickSolveNotes}>Quick notes</button>
       </div>
     </div>
   );

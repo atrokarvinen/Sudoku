@@ -20,6 +20,24 @@ namespace Sudoku.Domain
             Cells = GetCellsFromText(sudokuAsText);
         }
 
+        public Cell GetCell(GridPoint gridPoint)
+        {
+            var (row, column) = gridPoint;
+            return Cells[row][column];
+        }
+
+        public void SetCellNumber(GridPoint gridPoint, int? number)
+        {
+            Cell cell = GetCell(gridPoint);
+            cell.Number = number;
+        }
+
+        public void SetCellNote(GridPoint gridPoint, int number)
+        {
+            Cell cell = GetCell(gridPoint);
+            cell.AddNote(number);
+        }
+
         public Cell[][] GetCellsFromText(string text)
         {
             string[] cellsText = text.Split(',');
@@ -39,6 +57,12 @@ namespace Sudoku.Domain
             }
 
             return cells;
+        }
+
+        public void ResetCellNotes(GridPoint gridPoint)
+        {
+            Cell cell = GetCell(gridPoint);
+            cell.ResetNotes();
         }
 
         public string ShowAsText()

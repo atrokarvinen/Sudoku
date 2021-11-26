@@ -26,6 +26,7 @@ export default function Grid(props: GridProps) {
                 column={columnIndex}
                 number={cell.number}
                 cellClicked={props.cellClicked}
+                notes={cell.notes}
               />
             );
           })}

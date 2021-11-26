@@ -14,7 +14,7 @@ interface CellProps {
 }
 
 export default function Cell(props: CellProps) {
-  const { number, isUserFilled, row, column } = props;
+  const { number, isUserFilled, row, column, notes } = props;
 
   const numberStyle = isUserFilled ? "user-filled" : "pre-filled";
   // const noteNumbers = notes ?? [];
@@ -78,11 +78,20 @@ export default function Cell(props: CellProps) {
     }
   };
 
+  const displayNotes = () => {
+    return (
+      <div className="cell-notes">
+        {notes?.map(note => <span className={`note-number-${note}`}>{note}</span>)}
+      </div>
+    )
+  }
+
   return (
     <div className={`cell ${enforceRow} ${enforceColumn}`}>
       {/* <button className="cell__button" type="button" onClick={() => props.cellClicked({ ...props })}>
         <span style={{ color: numberColor }}>{number}</span>
       </button> */}
+      {displayNotes()}
       <input
         className={`cell__textbox ${numberStyle}`}
         type="text"

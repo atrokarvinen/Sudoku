@@ -20,7 +20,12 @@ export function SudokuGame(props: SudokuGameProps) {
     for (let row = 0; row < 9; row++) {
       const sudokuRow: CellType[] = [];
       for (let column = 0; column < 9; column++) {
-        sudokuRow.push({ row: row, column: column, number: row + 1 });
+        sudokuRow.push({
+          row: row,
+          column: column,
+          number: row + 1,
+          notes: [1, 2, 3],
+        });
       }
       sudokuGrid.cells.push(sudokuRow);
     }
