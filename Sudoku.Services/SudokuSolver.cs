@@ -16,15 +16,63 @@ namespace Sudoku.Services
             _sudokuRules = sudokuRules;
         }
 
+        public bool IsSudokuSolved(Grid grid)
+        {
+            List<Cell> cells = grid.GetCellsAsList();
+            return cells.All(cell => _sudokuRules.CanNumberBePlaced(grid, cell.GridPoint, cell.Number.Value));
+        }
+
         public Grid Solve(Sudoku.Domain.Sudoku sudoku)
         {
             Grid grid = sudoku.Grid;
-            throw new NotImplementedException();
+            grid = QuickSolveNotes(grid);
+
+            int maxSteps = 9 * 9;
+            int step = 0;
+            while (step < maxSteps)
+            {
+                try
+                {
+                    Cell solvedCell = SolveNextStep(grid);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Run into problem with solving: {0}", ex.Message);
+                    break;
+                }
+
+                step++;
+            }
+
+            bool isSolved = IsSudokuSolved(grid);
+
+            return grid;
         }
 
         public Cell SolveNextStep(Grid sudoku)
         {
-            throw new NotImplementedException();
+            //if (sudoku.GetCellsAsList().Any(cell => cell.Notes.Count() == 0 && cell.Number is null))
+            sudoku = QuickSolveNotes(sudoku);
+
+            int solvedNumber;
+            GridPoint solvedCellLocation;
+
+            Cell singleCandidate = SearchForSingleCandidates(sudoku);
+            if (singleCandidate is null)
+                throw new Exception("No solution found.");
+
+            solvedNumber = singleCandidate.Notes.First();
+            solvedCellLocation = new GridPoint(singleCandidate.Row, singleCandidate.Column);
+
+            Cell solvedCell = sudoku.GetCell(solvedCellLocation);
+            solvedCell.Number = solvedNumber;
+
+            List<Cell> relatedCells = _sudokuRules.GetRelatedCells(sudoku, solvedCellLocation);
+            relatedCells.ForEach(cell => cell.RemoveNote(solvedNumber));
+            solvedCell.ResetNotes();
+
+            // Todo must return list of updating cells. Otherwise related notes wont update.
+            return solvedCell;
         }
 
         public Grid QuickSolveNotes(Grid sudoku)
@@ -59,7 +107,11 @@ namespace Sudoku.Services
 
         public void ScanInTwoDirections() { }
 
-        public void SearchForSingleCandidates() { }
+        public Cell SearchForSingleCandidates(Grid sudoku)
+        {
+            List<Cell> cells = sudoku.GetCellsAsList();
+            return cells.Find(cell => cell.Notes.Count() == 1);
+        }
 
         public void EliminatingNumbers() { }
 

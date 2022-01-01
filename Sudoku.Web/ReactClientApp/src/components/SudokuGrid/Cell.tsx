@@ -1,4 +1,4 @@
-import CellType from "../../models/CellType";
+import { CellType } from "../../models/CellType";
 import "./Grid.css";
 
 interface CellProps {
@@ -25,7 +25,7 @@ export default function Cell(props: CellProps) {
 
   const allowedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  console.log(`Cell coordinates: (c x r) = (${column}, ${row})`);
+  // console.log(`Cell coordinates: (c x r) = (${column}, ${row})`);
   const handleCellErase = () => {
     const cellValue: CellType = { ...props };
     cellValue.number = undefined;

@@ -37,10 +37,10 @@ namespace Sudoku.Web
             });
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sudoku.Web", Version = "v1" });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sudoku.Web", Version = "v1" });
+            //});
 
             services.AddSingleton<ISudokuRules, StandardSudokuRules>();
             services.AddSingleton<ISudokuProvider, SudokuFileProvider>();
@@ -52,9 +52,9 @@ namespace Sudoku.Web
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku.Web v1"));
+                //app.UseDeveloperExceptionPage();
+                //app.UseSwagger();
+                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sudoku.Web v1"));
             }
 
             app.UseHttpsRedirection();

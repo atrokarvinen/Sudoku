@@ -1,6 +1,6 @@
-import CellType from "./CellType";
+import { CellType } from "./CellType";
 
-export default interface GridType {
+export declare type GridType = {
     cells: CellType[][]
 }
 

@@ -18,4 +18,5 @@ public interface ISudokuRules
     public List<Cell> GetCellsInRow(Grid grid, int row);
     public List<Cell> GetCellsInColumn(Grid grid, int column);
     public List<Cell> GetCellsInBox(Grid grid, GridPoint gridPoint);
+    public List<Cell> GetRelatedCells(Grid sudoku, GridPoint gridPoint);
 }

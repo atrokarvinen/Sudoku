@@ -5,11 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <Compile Remove="ReactClientApp\**" />
+    <Content Remove="ReactClientApp\**" />
+    <EmbeddedResource Remove="ReactClientApp\**" />
+    <None Remove="ReactClientApp\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ReactClientApp\" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>

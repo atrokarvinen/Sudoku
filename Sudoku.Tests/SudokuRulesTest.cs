@@ -134,7 +134,7 @@ namespace Sudoku.Tests
         {
             Assert.True(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 2));
             Assert.True(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 7));
-            
+
         }
 
 
@@ -148,6 +148,44 @@ namespace Sudoku.Tests
             Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 6));
             Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 8));
             Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 9));
+        }
+
+        [Fact]
+        public void GetRelatedCells()
+        {
+            List<Cell> relatedCells = _SudokuRules.GetRelatedCells(Grid, new GridPoint(0, 0));
+
+            Assert.True(relatedCells.Count == (3 * 3) + 6 + 6);
+
+            List<GridPoint> expectedGridPoints = new List<GridPoint>()
+            {
+                // Box
+                new GridPoint(0,0), new GridPoint(0,1), new GridPoint(0,2),
+                new GridPoint(1,0), new GridPoint(1,1), new GridPoint(1,2),
+                new GridPoint(2,0), new GridPoint(2,1), new GridPoint(2,2),
+
+                // Column
+                new GridPoint(0,3),
+                new GridPoint(0,4),
+                new GridPoint(0,5),
+                new GridPoint(0,6),
+                new GridPoint(0,7),
+                new GridPoint(0,8),
+
+                // Row
+                new GridPoint(3,0),
+                new GridPoint(4,0),
+                new GridPoint(5,0),
+                new GridPoint(6,0),
+                new GridPoint(7,0),
+                new GridPoint(8,0),
+
+            };
+
+            foreach (var gridPoint in expectedGridPoints)
+            {
+                Assert.Single(relatedCells, gridPoint);
+            }
         }
     }
 }

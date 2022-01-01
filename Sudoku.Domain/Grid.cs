@@ -26,6 +26,20 @@ namespace Sudoku.Domain
             return Cells[row][column];
         }
 
+        public List<Cell> GetCellsAsList()
+        {
+            List<Cell> cellList = new List<Cell>();
+            for (int row = 0; row < Cells.Length; row++)
+            {
+                for (int column = 0; column < Cells[row].Length; column++)
+                {
+                    cellList.Add(GetCell(new GridPoint(row, column)));
+                }
+            }
+
+            return cellList;
+        }
+
         public void SetCellNumber(GridPoint gridPoint, int? number)
         {
             Cell cell = GetCell(gridPoint);

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Sudoku.Tests;
 
-public class SudokuGrid
+public class SudokuGridTests
 {
     string sudokuText = "-,-,-,-,1,8,-,-,-," +
                         "5,3,8,2,9,4,-,-,-," +
@@ -46,5 +46,34 @@ public class SudokuGrid
         string sudokuAsText = grid.ShowAsText();
 
         Assert.Equal(sudokuText, sudokuAsText);
+    }
+
+    [Fact]
+    public void AddNote()
+    {
+        Grid grid = new Grid(sudokuText);
+
+        GridPoint gridPoint = new GridPoint(0, 0);
+        grid.SetCellNote(gridPoint, 1);
+
+        IEnumerable<int> notes = grid.GetCell(gridPoint).Notes;
+        Assert.True(notes.Count() == 1);
+        Assert.True(notes.First() == 1);
+    }
+
+    [Fact]
+    public void ResetNotes()
+    {
+        Grid grid = new Grid(sudokuText);
+
+        GridPoint gridPoint = new GridPoint(0, 0);
+        grid.SetCellNote(gridPoint, 1);
+        grid.SetCellNote(gridPoint, 2);
+        grid.SetCellNote(gridPoint, 3);
+
+        grid.ResetCellNotes(gridPoint);
+
+        IEnumerable<int> notes = grid.GetCell(gridPoint).Notes;
+        Assert.True(notes.Count() == 0);
     }
 }

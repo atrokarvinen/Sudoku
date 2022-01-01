@@ -3,8 +3,8 @@ import { Layout } from "./layout/Layout";
 import Menu from "./components/Menu/Menu";
 import SudokuGame from "./components/SudokuGame/SudokuGame";
 import React from "react";
-import GridType, { EmptySudokuGrid } from "./models/GripType";
-import CellType from "./models/CellType";
+import { CellType } from "./models/CellType";
+import { GridType, EmptySudokuGrid } from "./models/GridType";
 
 function App() {
   const backendUrl = "https://localhost:44340";
@@ -61,13 +61,14 @@ function App() {
     })
       .then((response: Response) => response.json())
       .then((solvedCell: CellType) => {
-        const { row, column, number } = solvedCell;
+        const { row, column, number, notes } = solvedCell;
         console.log(
           `Solved step successfully. Next step: (${column}, ${row}) = ${number}`
         );
         const newSudokuState = { ...sudokuState };
 
         newSudokuState.cells[row][column].number = number;
+        newSudokuState.cells[row][column].notes = notes;
 
         setSudokuState(newSudokuState);
       })

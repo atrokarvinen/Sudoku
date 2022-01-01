@@ -1,6 +1,6 @@
 import * as React from "react";
-import CellType from "../../models/CellType";
-import GridType from "../../models/GripType";
+import { CellType } from "../../models/CellType";
+import { GridType } from "../../models/GridType";
 import Grid from "../SudokuGrid/Grid";
 
 export interface SudokuGameProps {

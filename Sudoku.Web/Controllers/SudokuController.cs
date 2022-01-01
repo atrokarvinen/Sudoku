@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Sudoku.Domain;
 using Sudoku.Services;
 using Sudoku.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Sudoku.Web.Controllers
 {
@@ -16,10 +10,9 @@ namespace Sudoku.Web.Controllers
     [Route("[controller]")]
     public class SudokuController : ControllerBase
     {
-        readonly ISudokuProvider _sudokuProvider;
-        readonly ISudokuSolver _sudokuSolver;
-
-        ApplicationConfiguration _appConfig = new ApplicationConfiguration();
+        private readonly ISudokuProvider _sudokuProvider;
+        private readonly ISudokuSolver _sudokuSolver;
+        private readonly ApplicationConfiguration _appConfig = new ApplicationConfiguration();
 
         public SudokuController(ISudokuProvider sudokuProvider, ISudokuSolver sudokuSolver)
         {
@@ -57,28 +50,32 @@ namespace Sudoku.Web.Controllers
         [EnableCors]
         public ActionResult<Domain.Sudoku> LoadGame(string gameFile)
         {
-            return _sudokuProvider.LoadSudoku(gameFile);
+            Domain.Sudoku game = _sudokuProvider.LoadSudoku(gameFile);
+            return new OkObjectResult(game);
         }
 
         [HttpGet("loadgame")]
         [EnableCors]
         public ActionResult<Grid> LoadGame()
         {
-            return _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
+            Grid grid = _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
+            return new OkObjectResult(grid);
         }
 
         [HttpPost("solve-next-step")]
         [EnableCors]
         public ActionResult<Cell> SolveNextStep([FromBody] Grid sudoku)
         {
-            return _sudokuSolver.SolveNextStep(sudoku);
+            Cell cell = _sudokuSolver.SolveNextStep(sudoku);
+            return new OkObjectResult(cell);
         }
 
         [HttpPost("quick-solve-notes")]
         [EnableCors]
         public ActionResult<Grid> QuickSolveNotes([FromBody] Grid sudoku)
         {
-            return _sudokuSolver.QuickSolveNotes(sudoku);
+            Grid grid = _sudokuSolver.QuickSolveNotes(sudoku);
+            return new OkObjectResult(grid);
         }
 
         //public void Undo() { }

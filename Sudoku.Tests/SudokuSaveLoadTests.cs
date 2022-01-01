@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Sudoku.Tests;
 
-public class SudokuSaveLoad
+public class SudokuSaveLoadTests
 {
     string sudokuText = "-,-,-,-,1,8,-,-,-," +
                         "5,3,8,2,9,4,-,-,-," +

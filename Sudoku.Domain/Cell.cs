@@ -10,8 +10,9 @@ namespace Sudoku.Domain
     {
         public int Row { get; set; }
         public int Column { get; set; }
+        public GridPoint GridPoint => new GridPoint(Row, Column);
         public int? Number { get; set; }
-        public List<int> Notes { get; set; } = new List<int>();
+        public IEnumerable<int> Notes { get; set; } = new List<int>();
 
         public Cell()
         {
@@ -28,25 +29,27 @@ namespace Sudoku.Domain
         public void AddNote(int number)
         {
             if (!Notes.Contains(number))
-                Notes.Add(number);
+                Notes = Notes.Append(number);
         }
 
         public void RemoveNote(int number)
         {
-            Notes.Remove(number);
+            List<int> noteList = Notes.ToList();
+            noteList.Remove(number);
+            Notes = noteList;
+        }
+
+        public void ResetNotes()
+        {
+            while (Notes.Count() > 0)
+            {
+                RemoveNote(Notes.First());
+            }
         }
 
         public override string ToString()
         {
             return $"({Column}, {Row}) = {Number?.ToString() ?? "-"}";
-        }
-
-        internal void ResetNotes()
-        {
-            while (Notes.Count > 0)
-            {
-                RemoveNote(Notes.First());
-            }
         }
     }
 }

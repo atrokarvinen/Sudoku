@@ -26,13 +26,13 @@ namespace Sudoku.Services
 
         public bool DoesRowAllowPlacement(Grid grid, int row, int number)
         {
-            List<Cell> rowCells = grid.Cells[row].ToList();
+            List<Cell> rowCells = GetCellsInRow(grid, row);
             return rowCells.TrueForAll(cell => cell.Number != number);
         }
 
         public bool DoesColumnAllowPlacement(Grid grid, int column, int number)
         {
-            List<Cell> columnCells = grid.Cells.Select(row => row[column]).ToList();
+            List<Cell> columnCells = GetCellsInColumn(grid, column);
             return columnCells.TrueForAll(cell => cell.Number != number);
         }
 
@@ -44,12 +44,12 @@ namespace Sudoku.Services
 
         public List<Cell> GetCellsInRow(Grid grid, int row)
         {
-            throw new NotImplementedException();
+            return grid.Cells[row].ToList();
         }
 
         public List<Cell> GetCellsInColumn(Grid grid, int column)
         {
-            throw new NotImplementedException();
+            return grid.Cells.Select(row => row[column]).ToList();
         }
 
         public List<Cell> GetCellsInBox(Grid grid, GridPoint gridPoint)
@@ -74,6 +74,27 @@ namespace Sudoku.Services
             int boxSize = 3;
             int boxMin = location - (location % boxSize);
             return Enumerable.Range(boxMin, boxSize).ToArray();
+        }
+
+        public List<Cell> GetRelatedCells(Grid sudoku, GridPoint gridPoint)
+        {
+            var (row, columm) = gridPoint;
+            
+            List<Cell> rowCells = GetCellsInRow(sudoku, row);
+            List<Cell> columnCells = GetCellsInColumn(sudoku, columm);
+            List<Cell> boxCells = GetCellsInBox(sudoku, gridPoint);
+            
+            List<Cell> relatedCells = new List<Cell>();
+            relatedCells.AddRange(rowCells);
+            relatedCells.AddRange(columnCells);
+            relatedCells.AddRange(boxCells);
+
+            // Todo find a way to remove duplicates from box, row and column overlap.
+            relatedCells = relatedCells.GroupBy(cell => cell.GridPoint)
+                .First()
+                .ToList();
+
+            return relatedCells;
         }
     }
 }
