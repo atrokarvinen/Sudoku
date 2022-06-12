@@ -8,10 +8,18 @@
 
   <ItemGroup>
     <None Remove="Saved test sudokus\Sudoku_simple.txt" />
+    <None Remove="Saved test sudokus\Sudoku_solved.txt" />
+    <None Remove="Saved test sudokus\Sudoku_wrongly_solved.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Saved test sudokus\Sudoku_simple.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Saved test sudokus\Sudoku_wrongly_solved.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Saved test sudokus\Sudoku_solved.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

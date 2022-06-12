@@ -33,44 +33,44 @@ namespace Sudoku.Tests
             Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 8)));
         }
 
-        [Fact]
-        public void RowShouldAllowPlacement()
-        {
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 2));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 3));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 4));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 5));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 6));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 7));
-            Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 9));
-        }
+        //[Fact]
+        //public void RowShouldAllowPlacement()
+        //{
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 2));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 3));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 4));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 5));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 6));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 7));
+        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 9));
+        //}
 
-        [Fact]
-        public void RowShouldNotAllowPlacement()
-        {
-            Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 1));
-            Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 8));
-        }
+        //[Fact]
+        //public void RowShouldNotAllowPlacement()
+        //{
+        //    Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 1));
+        //    Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 8));
+        //}
 
-        [Fact]
-        public void ColumnShouldAllowPlacement()
-        {
-            Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 2));
-            Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 6));
-            Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 7));
-        }
+        //[Fact]
+        //public void ColumnShouldAllowPlacement()
+        //{
+        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 2));
+        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 6));
+        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 7));
+        //}
 
 
-        [Fact]
-        public void ColumnShouldNotAllowPlacement()
-        {
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 1));
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 3));
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 4));
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 5));
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 8));
-            Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 9));
-        }
+        //[Fact]
+        //public void ColumnShouldNotAllowPlacement()
+        //{
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 1));
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 3));
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 4));
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 5));
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 8));
+        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 9));
+        //}
 
         [Fact]
         public void GetCellsInBox_TopLeft()
@@ -108,25 +108,27 @@ namespace Sudoku.Tests
             Assert.True(boxCells.Max(x => x.Column) == 8);
         }
 
-        [Fact]
-        public void BoxShouldAllowPlacement()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(7)]
+        public void BoxShouldAllowPlacement(int number)
         {
-            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 1));
-            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 2));
-            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 4));
-            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 7));
+            GridPoint gridPoint = new GridPoint(0, 0);
+            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, gridPoint, number));
         }
 
-
-
-        [Fact]
-        public void BoxShouldNotAllowPlacement()
+        [Theory]
+        [InlineData(3)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public void BoxShouldNotAllowPlacement(int number)
         {
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 3));
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 5));
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 6));
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 8));
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, new GridPoint(0, 0), 9));
+            GridPoint gridPoint = new GridPoint(0, 0);
+            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, gridPoint, number));
         }
 
         [Fact]
@@ -137,25 +139,24 @@ namespace Sudoku.Tests
 
         }
 
-
-        [Fact]
-        public void CellShouldNotAllowPlacement()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(8)]
+        [InlineData(9)]
+        public void CellShouldNotAllowPlacement(int number)
         {
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 1));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 3));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 4));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 5));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 6));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 8));
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 9));
+            GridPoint gridPoint = new GridPoint(0, 0);
+            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, gridPoint, number));
         }
 
         [Fact]
         public void GetRelatedCells()
         {
             List<Cell> relatedCells = _SudokuRules.GetRelatedCells(Grid, new GridPoint(0, 0));
-
-            Assert.True(relatedCells.Count == (3 * 3) + 6 + 6);
 
             List<GridPoint> expectedGridPoints = new List<GridPoint>()
             {
@@ -182,10 +183,9 @@ namespace Sudoku.Tests
 
             };
 
-            foreach (var gridPoint in expectedGridPoints)
-            {
-                Assert.Single(relatedCells, gridPoint);
-            }
+            var relatedGridpoints = relatedCells.Select(x => x.GridPoint);
+            Assert.Equal((3 * 3) + 6 + 6, relatedCells.Count);
+            Assert.All(expectedGridPoints, (gridpoint) => Assert.Single(relatedGridpoints, gridpoint));
         }
     }
 }

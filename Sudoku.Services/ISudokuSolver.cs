@@ -1,9 +1,4 @@
 ﻿using Sudoku.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sudoku.Services
 {
@@ -12,5 +7,6 @@ namespace Sudoku.Services
         public Grid Solve(Sudoku.Domain.Sudoku sudoku);
         public Cell SolveNextStep(Grid sudoku);
         public Grid QuickSolveNotes(Grid sudoku);
+        public bool IsSudokuSolved(Grid grid);
     }
 }

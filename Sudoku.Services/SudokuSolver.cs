@@ -19,7 +19,7 @@ namespace Sudoku.Services
         public bool IsSudokuSolved(Grid grid)
         {
             List<Cell> cells = grid.GetCellsAsList();
-            return cells.All(cell => _sudokuRules.CanNumberBePlaced(grid, cell.GridPoint, cell.Number.Value));
+            return cells.All(cell => cell.Number.HasValue && _sudokuRules.CanNumberBePlaced(grid, cell.GridPoint, cell.Number.Value));
         }
 
         public Grid Solve(Sudoku.Domain.Sudoku sudoku)
@@ -43,6 +43,8 @@ namespace Sudoku.Services
 
                 step++;
             }
+
+            new SudokuFileProvider().SaveSudoku(sudoku, "Solved.txt");
 
             bool isSolved = IsSudokuSolved(grid);
 

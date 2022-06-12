@@ -1,30 +1,47 @@
-﻿using FluentAssertions;
-using Sudoku.Domain;
-using Sudoku.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
+﻿namespace Sudoku.Tests;
 
-namespace Sudoku.Tests
+public class SudokuSolverTests
 {
-    public class SudokuSolverTests
+    private const string SimpleSudokuFile = "Sudoku_simple.txt";
+    private readonly ISudokuRules rules;
+    private readonly ISudokuSolver solver;
+
+    public SudokuSolverTests()
     {
-        private const string SimpleSudokuFile = "Sudoku_simple.txt";
+        rules = new StandardSudokuRules();
+        solver = new SudokuSolver(rules);
+    }
 
-        [Fact]
-        public void TestSolve()
-        {
-            ISudokuRules rules = new StandardSudokuRules();
-            ISudokuSolver solver = new SudokuSolver(rules);
+    [Fact]
+    public void IsSolved_SolvedSudoku_ReturnsTrue()
+    {
+        Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile("Sudoku_solved.txt");
+        Assert.True(solver.IsSudokuSolved(sudoku.Grid));
+    }
 
-            Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile(SimpleSudokuFile);
-            Grid grid = sudoku.Grid;
+    [Fact]
+    public void IsSolved_IncompleteSudoku_ReturnsFalse()
+    {
+        Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile(SimpleSudokuFile);
+        Assert.False(solver.IsSudokuSolved(sudoku.Grid));
+    }
 
-            //Cell solvedCell = solver.SolveNextStep(grid);
-            solver.Solve(sudoku);
-        }
+    [Fact]
+    public void IsSolved_WronglySolvedSudoku_ReturnsFalse()
+    {
+        Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile("Sudoku_wrongly_solved.txt");
+        Assert.False(solver.IsSudokuSolved(sudoku.Grid));
+    }
+
+    [Fact]
+    public void TestSolve()
+    {
+
+        Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile(SimpleSudokuFile);
+        Grid grid = sudoku.Grid;
+
+        //Cell solvedCell = solver.SolveNextStep(grid);
+        solver.Solve(sudoku);
     }
 }
+

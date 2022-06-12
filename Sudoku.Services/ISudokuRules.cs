@@ -12,8 +12,8 @@ public interface ISudokuRules
     public bool IsCellEmpty(Grid grid, GridPoint point);
 
     public bool CanNumberBePlaced(Grid grid, GridPoint point, int number);
-    public bool DoesRowAllowPlacement(Grid grid, int row, int number);
-    public bool DoesColumnAllowPlacement(Grid grid, int column, int number);
+    public bool DoesRowAllowPlacement(Grid grid, GridPoint point, int number);
+    public bool DoesColumnAllowPlacement(Grid grid, GridPoint point, int number);
     public bool DoesBoxAllowPlacement(Grid grid, GridPoint point, int number);
     public List<Cell> GetCellsInRow(Grid grid, int row);
     public List<Cell> GetCellsInColumn(Grid grid, int column);
