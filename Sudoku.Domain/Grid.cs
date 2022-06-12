@@ -7,7 +7,6 @@ namespace Sudoku.Domain
     public class Grid
     {
         private const string EmptyCellIdentifier = "-";
-
         public Cell[][] Cells { get; set; }
 
         public Grid()
@@ -20,10 +19,20 @@ namespace Sudoku.Domain
             Cells = GetCellsFromText(sudokuAsText);
         }
 
+        public Grid(Cell[][] cells)
+        {
+            Cells = cells;
+        }
+
+        public Cell GetCell(int row, int column)
+        {
+            return Cells[row][column];
+        }
+
         public Cell GetCell(GridPoint gridPoint)
         {
             var (row, column) = gridPoint;
-            return Cells[row][column];
+            return GetCell(row, column);
         }
 
         public List<Cell> GetCellsAsList()
@@ -55,7 +64,7 @@ namespace Sudoku.Domain
         public Cell[][] GetCellsFromText(string text)
         {
             string[] cellsText = text.Split(',');
-            
+
             int rowCount = 9;
             Cell[][] cells = new Cell[rowCount][];
 
@@ -77,6 +86,11 @@ namespace Sudoku.Domain
         {
             Cell cell = GetCell(gridPoint);
             cell.ResetNotes();
+        }
+
+        public void RemoveCellNote(GridPoint gridPoint, int number)
+        {
+            GetCell(gridPoint).RemoveNote(number);
         }
 
         public string ShowAsText()
