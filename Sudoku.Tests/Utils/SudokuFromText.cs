@@ -18,7 +18,7 @@ public static class SudokuFromText
 
         string[] textRows = text
             .Replace("|", "")
-            .Split('\r')
+            .Split('\r', '\n')
             .Where(rowStr => !rowStr.Contains("-"))
             .Select(stringRow => stringRow.Substring(stringRow.Length - columnCount, columnCount))
             .ToArray();

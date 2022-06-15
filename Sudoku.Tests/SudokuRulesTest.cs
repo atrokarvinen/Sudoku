@@ -1,81 +1,44 @@
-using Sudoku.Domain;
-using Sudoku.Services;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-
 namespace Sudoku.Tests
 {
     public class SudokuRulesTest
     {
-        private const string SimpleSudokuFile = "Sudoku_simple.txt";
-        private readonly ISudokuRules _SudokuRules;
-        private readonly Grid Grid;
+        private readonly ISudokuRules _sudokuRules;
+        private readonly Grid _grid;
+
+        private const string SUDOKU_TEXT =
+            @" 1 |   |   
+                 |   |   
+                3|   |   
+              -----------
+                 |   |   
+                 |   |   
+                 |   |   
+              -----------
+                 |   |   
+                 |   |  4
+              2  |   |   ";
 
         public SudokuRulesTest()
         {
-            _SudokuRules = new StandardSudokuRules();
-            Domain.Sudoku sudoku = SudokuTestUtils.LoadSudokuFromFile(SimpleSudokuFile);
-            Grid = sudoku.Grid;
+            _sudokuRules = new StandardSudokuRules();
+            _grid = SudokuFromText.Convert(SUDOKU_TEXT);
         }
 
-        [Fact]
-        public void CellIsEmpty()
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(1, 0)]
+        [InlineData(8, 8)]
+        public void CellIsEmpty(int row, int column)
         {
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 0)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 1)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 2)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 3)));
-            Assert.False(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 4)));
-            Assert.False(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 5)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 6)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 7)));
-            Assert.True(_SudokuRules.IsCellEmpty(Grid, new GridPoint(0, 8)));
+            GridPoint gridPoint = new GridPoint(row, column);
+
+            _sudokuRules.IsCellEmpty(_grid, gridPoint).Should().BeTrue();
         }
-
-        //[Fact]
-        //public void RowShouldAllowPlacement()
-        //{
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 2));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 3));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 4));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 5));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 6));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 7));
-        //    Assert.True(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 9));
-        //}
-
-        //[Fact]
-        //public void RowShouldNotAllowPlacement()
-        //{
-        //    Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 1));
-        //    Assert.False(_SudokuRules.DoesRowAllowPlacement(Grid, 0, 8));
-        //}
-
-        //[Fact]
-        //public void ColumnShouldAllowPlacement()
-        //{
-        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 2));
-        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 6));
-        //    Assert.True(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 7));
-        //}
-
-
-        //[Fact]
-        //public void ColumnShouldNotAllowPlacement()
-        //{
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 1));
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 3));
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 4));
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 5));
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 8));
-        //    Assert.False(_SudokuRules.DoesColumnAllowPlacement(Grid, 0, 9));
-        //}
 
         [Fact]
         public void GetCellsInBox_TopLeft()
         {
-            List<Cell> boxCells = _SudokuRules.GetCellsInBox(Grid, new GridPoint(0, 0));
+            List<Cell> boxCells = _sudokuRules.GetCellsInBox(_grid, new GridPoint(0, 0));
 
             Assert.True(boxCells.Count == 9);
             Assert.True(boxCells.Min(x => x.Row) == 0);
@@ -87,7 +50,7 @@ namespace Sudoku.Tests
         [Fact]
         public void GetCellsInBox_Center()
         {
-            List<Cell> boxCells = _SudokuRules.GetCellsInBox(Grid, new GridPoint(4, 4));
+            List<Cell> boxCells = _sudokuRules.GetCellsInBox(_grid, new GridPoint(4, 4));
 
             Assert.True(boxCells.Count == 9);
             Assert.True(boxCells.Min(x => x.Row) == 3);
@@ -99,7 +62,7 @@ namespace Sudoku.Tests
         [Fact]
         public void GetCellsInBox_BottomRight()
         {
-            List<Cell> boxCells = _SudokuRules.GetCellsInBox(Grid, new GridPoint(7, 7));
+            List<Cell> boxCells = _sudokuRules.GetCellsInBox(_grid, new GridPoint(7, 7));
 
             Assert.True(boxCells.Count == 9);
             Assert.True(boxCells.Min(x => x.Row) == 6);
@@ -109,54 +72,50 @@ namespace Sudoku.Tests
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(4)]
-        [InlineData(7)]
-        public void BoxShouldAllowPlacement(int number)
+        [InlineData(0, 0, 4)]
+        [InlineData(6, 0, 5)]
+        [InlineData(8, 8, 7)]
+        public void BoxShouldAllowPlacement(int row, int column, int number)
         {
-            GridPoint gridPoint = new GridPoint(0, 0);
-            Assert.True(_SudokuRules.DoesBoxAllowPlacement(Grid, gridPoint, number));
+            GridPoint gridPoint = new GridPoint(row, column);
+            Assert.True(_sudokuRules.DoesBoxAllowPlacement(_grid, gridPoint, number));
         }
 
         [Theory]
-        [InlineData(3)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(8)]
-        [InlineData(9)]
-        public void BoxShouldNotAllowPlacement(int number)
+        [InlineData(0, 0, 1)]
+        [InlineData(6, 0, 2)]
+        [InlineData(8, 8, 4)]
+        public void BoxShouldNotAllowPlacement(int row, int column, int number)
         {
-            GridPoint gridPoint = new GridPoint(0, 0);
-            Assert.False(_SudokuRules.DoesBoxAllowPlacement(Grid, gridPoint, number));
+            GridPoint gridPoint = new GridPoint(row, column);
+            Assert.False(_sudokuRules.DoesBoxAllowPlacement(_grid, gridPoint, number));
         }
 
-        [Fact]
-        public void CellShouldAllowPlacement()
+        [Theory]
+        [InlineData(0, 0, 4)]
+        [InlineData(1, 0, 4)]
+        [InlineData(8, 8, 1)]
+        public void CellShouldAllowPlacement(int row, int column, int number)
         {
-            Assert.True(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 2));
-            Assert.True(_SudokuRules.CanNumberBePlaced(Grid, new GridPoint(0, 0), 7));
+            GridPoint gridPoint = new GridPoint(row, column);
+            _sudokuRules.CanNumberBePlaced(_grid, gridPoint, number).Should().BeTrue();
 
         }
 
         [Theory]
-        [InlineData(1)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(8)]
-        [InlineData(9)]
-        public void CellShouldNotAllowPlacement(int number)
+        [InlineData(0, 0, 1)]
+        [InlineData(2, 1, 3)]
+        [InlineData(8, 8, 4)]
+        public void CellShouldNotAllowPlacement(int row, int column, int number)
         {
-            GridPoint gridPoint = new GridPoint(0, 0);
-            Assert.False(_SudokuRules.CanNumberBePlaced(Grid, gridPoint, number));
+            GridPoint gridPoint = new GridPoint(row, column);
+            _sudokuRules.CanNumberBePlaced(_grid, gridPoint, number).Should().BeFalse();
         }
 
-        [Fact]
+        [Fact(Skip = "In progress")]
         public void GetRelatedCells()
         {
-            List<Cell> relatedCells = _SudokuRules.GetRelatedCells(Grid, new GridPoint(0, 0));
+            List<Cell> relatedCells = _sudokuRules.GetRelatedCells(_grid, new GridPoint(0, 0));
 
             List<GridPoint> expectedGridPoints = new List<GridPoint>()
             {

@@ -6,17 +6,11 @@ namespace Sudoku.Domain
 {
     public class Grid
     {
-        private const string EmptyCellIdentifier = "-";
         public Cell[][] Cells { get; set; }
 
         public Grid()
         {
 
-        }
-
-        public Grid(string sudokuAsText)
-        {
-            Cells = GetCellsFromText(sudokuAsText);
         }
 
         public Grid(Cell[][] cells)
@@ -61,27 +55,6 @@ namespace Sudoku.Domain
             cell.AddNote(number);
         }
 
-        public Cell[][] GetCellsFromText(string text)
-        {
-            string[] cellsText = text.Split(',');
-
-            int rowCount = 9;
-            Cell[][] cells = new Cell[rowCount][];
-
-            for (int row = 0; row < rowCount; row++)
-            {
-                cells[row] = new Cell[rowCount];
-                for (int column = 0; column < rowCount; column++)
-                {
-                    string cellNumberStr = cellsText[row * rowCount + column];
-                    int? number = cellNumberStr == EmptyCellIdentifier ? null : int.Parse(cellNumberStr);
-                    cells[row][column] = new Cell(row, column, number);
-                }
-            }
-
-            return cells;
-        }
-
         public void ResetCellNotes(GridPoint gridPoint)
         {
             Cell cell = GetCell(gridPoint);
@@ -100,6 +73,6 @@ namespace Sudoku.Domain
         }
 
         private string CellToSudokuSymbol(Cell cell) => NullableIntToSudokuSymbol(cell.Number);
-        private string NullableIntToSudokuSymbol(int? number) => number?.ToString() ?? EmptyCellIdentifier;
+        private string NullableIntToSudokuSymbol(int? number) => number?.ToString() ?? "-";
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Sudoku.Services.Strategies;
 
-public class RowScanStrategy : ISudokuStrategy
+public class ColumnScanStrategy : ISudokuStrategy
 {
     public IEnumerable<SudokuSolutionBase> Solve(Grid sudoku)
     {
@@ -15,9 +15,9 @@ public class RowScanStrategy : ISudokuStrategy
             .SelectMany(cell =>
             {
                 int number = cell.Number.Value;
-                int row = cell.Row;
-                IEnumerable<Cell> eliminatedCells = cells.Where(c => c.Row == row && c.Notes.Contains(number));
-                return eliminatedCells.Select(c => new Elimination(row, c.Column, number));
+                int column = cell.Column;
+                IEnumerable<Cell> eliminatedCells = cells.Where(c => c.Column == column && c.Notes.Contains(number));
+                return eliminatedCells.Select(c => new Elimination(c.Row, column, number));
             });
         return eliminations;
     }
