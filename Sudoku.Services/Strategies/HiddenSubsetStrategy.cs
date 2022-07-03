@@ -5,9 +5,14 @@ using System.Linq;
 
 namespace Sudoku.Services.Strategies;
 
-public class RowScanStrategy : ISudokuStrategy
+/// <summary>
+/// When n candidates are possible in a certain set of n cells all in the same
+/// block, row, or column, and those n candidates are not possible elsewhere 
+/// in that same block, row, or column, then no other candidates are possible in those cells.
+/// </summary>
+public class HiddenSubsetStrategy : EliminationStrategyBase
 {
-    public IEnumerable<SudokuSolutionBase> Solve(Grid sudoku)
+    public override IEnumerable<SudokuSolutionBase> Solve(Grid sudoku)
     {
         List<Cell> cells = sudoku.GetCellsAsList();
         IEnumerable<Elimination> eliminations = cells

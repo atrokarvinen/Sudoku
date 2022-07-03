@@ -24,7 +24,7 @@ public class SudokuFromTextTests
     [InlineData(8, 2, 9)]
     public void Convert_SudokuFromText_ConvertsCorrectNumbers(int row, int column, int number)
     {
-        Grid testGrid = SudokuFromText.Convert(sudokuText);
+        Grid testGrid = SudokuGenerator.FromText(sudokuText);
         testGrid.GetCell(row, column).Number.Should().Be(number);
     }
 }

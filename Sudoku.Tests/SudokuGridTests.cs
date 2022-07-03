@@ -19,7 +19,7 @@ public class SudokuGridTests
 
     public SudokuGridTests()
     {
-        _grid = SudokuFromText.Convert(sudokuText);
+        _grid = SudokuGenerator.FromText(sudokuText);
     }
 
     [Fact]

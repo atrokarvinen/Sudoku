@@ -6,11 +6,25 @@ using System.Threading.Tasks;
 
 namespace Sudoku.Tests.Utils;
 
-public static class SudokuFromText
+public static class SudokuGenerator
 {
     private const string EMPTY_CELL = " ";
 
-    public static Grid Convert(string text)
+    public static Grid EmptySudoku(int boxSize = 3)
+    {
+        int gridSize = boxSize * boxSize;
+        Cell[][] cells = new Cell[gridSize][];
+        for (int row = 0; row < gridSize; row++)
+        {
+            Cell[] rowCells = Enumerable.Range(0, gridSize)
+                .Select(column => new Cell(row, column, number: null))
+                .ToArray();
+            cells[row] = rowCells;
+        }
+        return new Grid() { Cells = cells};
+    }
+
+    public static Grid FromText(string text)
     {
         int rowCount = 9;
         int columnCount = 9;
@@ -19,7 +33,7 @@ public static class SudokuFromText
         string[] textRows = text
             .Replace("|", "")
             .Split('\r', '\n')
-            .Where(rowStr => !rowStr.Contains("-"))
+            .Where(rowStr => !rowStr.Contains("-") && rowStr.Length > 0)
             .Select(stringRow => stringRow.Substring(stringRow.Length - columnCount, columnCount))
             .ToArray();
 

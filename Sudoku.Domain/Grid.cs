@@ -55,6 +55,12 @@ namespace Sudoku.Domain
             cell.AddNote(number);
         }
 
+        public void SetCellNote(int row, int column, int number)
+        {
+            Cell cell = GetCell(row, column);
+            cell.AddNote(number);
+        }
+
         public void ResetCellNotes(GridPoint gridPoint)
         {
             Cell cell = GetCell(gridPoint);
@@ -74,5 +80,20 @@ namespace Sudoku.Domain
 
         private string CellToSudokuSymbol(Cell cell) => NullableIntToSudokuSymbol(cell.Number);
         private string NullableIntToSudokuSymbol(int? number) => number?.ToString() ?? "-";
+
+        public string[] Rows => Cells.Select(row =>
+        {
+            string[] numbers = row.Select(cell => cell.Number?.ToString() ?? "0").ToArray();
+            return string.Join("", numbers);
+        }).ToArray();
+
+        public double CompletionRate => GetCompletionRate();
+        public double TotalNoteCount => GetCellsAsList().SelectMany(cell => cell.Notes).Count();
+
+        private double GetCompletionRate()
+        {
+            int numberCount = GetCellsAsList().Where(cell => cell.Number.HasValue).Count();
+            return 1.0 * numberCount / GetCellsAsList().Count;
+        }
     }
 }

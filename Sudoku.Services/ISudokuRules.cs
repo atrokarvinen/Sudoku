@@ -16,6 +16,7 @@ public interface ISudokuRules
     public bool DoesColumnAllowPlacement(Grid grid, GridPoint point, int number);
     public bool DoesBoxAllowPlacement(Grid grid, GridPoint point, int number);
     public List<Cell> GetCellsInRow(Grid grid, int row);
+    public int GetCellBoxIndex(Cell cell);
     public List<Cell> GetCellsInColumn(Grid grid, int column);
     public List<Cell> GetCellsInBox(Grid grid, GridPoint gridPoint);
     public List<Cell> GetRelatedCells(Grid sudoku, GridPoint gridPoint);
