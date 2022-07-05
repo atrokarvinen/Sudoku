@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Sudoku.Domain;
 using Sudoku.Services;
+using Sudoku.Tests.Saved_test_sudokus;
+using Sudoku.Tests.Utils;
 using Sudoku.Web.Models;
 
 namespace Sudoku.Web.Controllers
@@ -58,7 +60,9 @@ namespace Sudoku.Web.Controllers
         [EnableCors]
         public ActionResult<Grid> LoadGame()
         {
-            Grid grid = _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
+            //Grid grid = _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
+            Grid expertSudoku = SudokuGenerator.FromText(TestSudokuFixtures.ExpertSudoku.Sudoku);
+            Grid grid = expertSudoku;
             return new OkObjectResult(grid);
         }
 
@@ -75,6 +79,14 @@ namespace Sudoku.Web.Controllers
         public ActionResult<Grid> QuickSolveNotes([FromBody] Grid sudoku)
         {
             Grid grid = _sudokuSolver.QuickSolveNotes(sudoku);
+            return new OkObjectResult(grid);
+        }
+
+        [HttpPost("solve")]
+        [EnableCors]
+        public ActionResult<Grid> Solve([FromBody] Grid sudoku)
+        {
+            Grid grid = _sudokuSolver.Solve(new Domain.Sudoku() { Grid = sudoku });
             return new OkObjectResult(grid);
         }
 

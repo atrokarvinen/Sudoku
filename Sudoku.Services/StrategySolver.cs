@@ -24,6 +24,7 @@ public class StrategySolver : ISudokuSolver
             new SingleCandidateStrategy(_sudokuRules),
             new LockedCandidatesStrategy(_sudokuRules),
             new NakedSubsetStrategy(_sudokuRules),
+            //new HiddenSubsetStrategy(sudokuRules),
         };
     }
 
@@ -64,6 +65,7 @@ public class StrategySolver : ISudokuSolver
             }
             catch (Exception ex)
             {
+                break;
                 throw;
             }
         }

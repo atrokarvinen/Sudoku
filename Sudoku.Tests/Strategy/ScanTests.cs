@@ -1,6 +1,6 @@
 using Sudoku.Services.Strategies;
 
-namespace Sudoku.Tests;
+namespace Sudoku.Tests.Strategy;
 
 public class ScanTests
 {

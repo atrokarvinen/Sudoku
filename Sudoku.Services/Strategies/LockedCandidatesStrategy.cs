@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Sudoku.Services.Strategies;
 
+
 /// <summary>
 /// When a candidate is possible in a certain block and row/column, 
 /// and it is not possible anywhere else in the same row/column, 
@@ -12,6 +13,12 @@ namespace Sudoku.Services.Strategies;
 /// </summary>
 public class LockedCandidatesStrategy : EliminationStrategyBase
 {
+    private enum Method
+    {
+        Pointing,
+        Claiming
+    }
+
     private readonly ISudokuRules _sudokuRules;
 
     public LockedCandidatesStrategy(ISudokuRules sudokuRules)
@@ -19,7 +26,7 @@ public class LockedCandidatesStrategy : EliminationStrategyBase
         _sudokuRules = sudokuRules;
     }
 
-    public override IEnumerable<SudokuSolutionBase> Solve(Grid sudoku)
+    public override IEnumerable<Elimination> Solve(Grid sudoku)
     {
         IEnumerable<Elimination> rowEliminations = EliminateRows(sudoku);
         IEnumerable<Elimination> columnEliminations = EliminateColumns(sudoku);
@@ -29,44 +36,67 @@ public class LockedCandidatesStrategy : EliminationStrategyBase
         allEliminations.AddRange(columnEliminations);
 
         IEnumerable<Elimination> uniqueEliminations = allEliminations.Distinct();
-            //.GroupBy(e => e.GridPoint)
-            //.Select(group => group.First());
 
         return uniqueEliminations;
     }
 
-    private IEnumerable<Elimination> EliminateRows(Grid sudoku)
+    public IEnumerable<Elimination> EliminateRows(Grid sudoku)
     {
         Func<Cell, Cell, bool> comparator = (cellA, cellB) => cellA.Row == cellB.Row;
-        return Eliminate(sudoku, comparator);
+        IEnumerable<Elimination> pointedCells = Eliminate(sudoku, comparator, Method.Pointing);
+        IEnumerable<Elimination> claimedCells = Eliminate(sudoku, comparator, Method.Claiming);
+        return pointedCells.Union(claimedCells);
     }
 
-    private IEnumerable<Elimination> EliminateColumns(Grid sudoku)
+    public IEnumerable<Elimination> EliminateColumns(Grid sudoku)
     {
         Func<Cell, Cell, bool> comparator = (cellA, cellB) => cellA.Column == cellB.Column;
-        return Eliminate(sudoku, comparator);
+        Func<Cell, Cell, bool> otherCellsQuery = (cellA, cellB) => cellA.Row == cellB.Row;
+        IEnumerable<Elimination> pointedCells = Eliminate(sudoku, comparator, Method.Pointing);
+        IEnumerable<Elimination> claimedCells = Eliminate(sudoku, comparator, Method.Claiming);
+        return pointedCells.Union(claimedCells);
     }
 
-    private IEnumerable<Elimination> Eliminate(Grid sudoku, Func<Cell, Cell, bool> comparator)
+    private IEnumerable<Elimination> Eliminate(
+        Grid sudoku, 
+        Func<Cell, Cell, bool> lineQuery,
+        Method method)
     {
         List<Elimination> eliminations = new List<Elimination>();
         List<Cell> cells = sudoku.GetCellsAsList();
         IEnumerable<Cell> emptyCells = cells.Where(cell => cell.Number is null);
         foreach (var emptyCell in emptyCells)
         {
+            int boxIndex = _sudokuRules.GetCellBoxIndex(emptyCell);
             IEnumerable<Cell> cellsInSameBox = _sudokuRules.GetCellsInBox(sudoku, emptyCell.GridPoint);
-            IEnumerable<Cell> cellsInSameBoxAndLine = cellsInSameBox.Where(cell => comparator(cell, emptyCell));
-            IEnumerable<Cell> cellsInSameBoxDifferentLine = cellsInSameBox.Where(cell => !comparator(cell, emptyCell));
-            HashSet<int> notesToTest = cellsInSameBoxAndLine.SelectMany(cell => cell.Notes).ToHashSet();
-            HashSet<int> notesToTestAgainst = cellsInSameBoxDifferentLine.SelectMany(cell => cell.Notes).ToHashSet();
+            IEnumerable<Cell> cellsInSameBoxAndLine = cellsInSameBox.Where(cell => lineQuery(cell, emptyCell));
+            IEnumerable<Cell> cellsInSameBoxDifferentLine = cellsInSameBox.Where(cell => !lineQuery(cell, emptyCell));
+            IEnumerable<Cell> cellsInSameLineDifferentBox = cells
+                .Where(cell => lineQuery(cell, emptyCell) && _sudokuRules.GetCellBoxIndex(cell) != boxIndex);
+
+            HashSet<int> notesToTest = cellsInSameBoxAndLine
+                .SelectMany(cell => cell.Notes)
+                .GroupBy(note => note)
+                .Where(notes => notes.Count() >= 2)
+                .Select(noteGroup => noteGroup.First())
+                .ToHashSet();
+
+            IEnumerable<Cell> cellsToTestAgainst = method == Method.Pointing
+                ? cellsInSameBoxDifferentLine
+                : cellsInSameLineDifferentBox;
+            HashSet<int> notesToTestAgainst = cellsToTestAgainst.SelectMany(cell => cell.Notes).ToHashSet();
+            //HashSet<int> notesToTestAgainst = cellsInSameLineDifferentBox.SelectMany(cell => cell.Notes).ToHashSet();
+            
+            // Remove notes from other cells in the box
             notesToTest.ExceptWith(notesToTestAgainst);
 
-            int boxIndex = _sudokuRules.GetCellBoxIndex(emptyCell);
-            IEnumerable<Cell> cellsInSameLineDifferentBox = cells.Where(cell => comparator(cell, emptyCell))
-                .Where(cell => _sudokuRules.GetCellBoxIndex(cell) != boxIndex);
             foreach (var note in notesToTest)
             {
-                IEnumerable<Cell> eliminatedCells = cellsInSameLineDifferentBox.Where(cell => cell.Notes.Contains(note));
+                IEnumerable<Cell> eliminatedGroup = method == Method.Pointing
+                    ? cellsInSameLineDifferentBox
+                    : cellsInSameBoxDifferentLine;
+                IEnumerable<Cell> eliminatedCells = eliminatedGroup.Where(cell => cell.Notes.Contains(note));
+                //IEnumerable<Cell> eliminatedCells = cellsInSameBoxDifferentLine.Where(cell => cell.Notes.Contains(note));
                 eliminations.AddRange(eliminatedCells.Select(cell => new Elimination(cell.Row, cell.Column, note)));
             }
         }

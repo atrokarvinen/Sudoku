@@ -53,6 +53,22 @@ public class NakedSubsetStrategy : EliminationStrategyBase
         return Eliminate(sudoku, groupBy);
     }
 
+    private IEnumerable<Elimination> Eliminate(Grid sudoku, Func<Cell, int> groupBy)
+    {
+        List<Elimination> eliminations = new List<Elimination>();
+        List<Cell> cells = sudoku.GetCellsAsList();
+        IEnumerable<Cell> emptyCells = cells.Where(cell => cell.Number is null);
+
+        var cellGroups = emptyCells.GroupBy(groupBy);
+        foreach (var cellGroup in cellGroups)
+        {
+            var partialEliminations = IterateSubsets(cellGroup);
+            eliminations.AddRange(partialEliminations);
+        }
+
+        return eliminations;
+    }
+
     private IEnumerable<Elimination> IterateSubsets(IEnumerable<Cell> cellGroup)
     {
         List<Elimination> eliminations = new List<Elimination>();
@@ -67,24 +83,30 @@ public class NakedSubsetStrategy : EliminationStrategyBase
             IEnumerable<GridPoint> points = cellGroup
                 .Where(c => c.Notes.Count() == setSize)
                 .Select(c => c.GridPoint);
-            var pairs = new Math.Combinatorics().GetAllSubsets(points, setSize);
-            var pairsWithSameNotes = pairs.Where(pair =>
+            var sets = new Math.Combinatorics().GetAllSubsets(points, setSize);
+            var setsWithSameNotes = sets.Where(set =>
             {
-                var notes1 = notesByPoint[pair.First()];
-                var notes2 = notesByPoint[pair.Last()];
+                HashSet<int> notesInSet = set
+                    .SelectMany(point => notesByPoint[point])
+                    .ToHashSet();
 
-                return notes1.Union(notes2).Count() == notes1.Count()
-                    && notes1.Count() == notes2.Count()
-                    && notes1.Count() > 0;
+                bool allNotesAreSame = set.All(point =>
+                {
+                    var notes = notesByPoint[point];
+                    return notes
+                        .OrderBy(n => n)
+                        .SequenceEqual(notesInSet.OrderBy(n => n));
+                });
+                return allNotesAreSame;
             });
 
-            foreach (var pair in pairsWithSameNotes)
+            foreach (var set in setsWithSameNotes)
             {
-                IEnumerable<Cell> nonPairedCells = cellGroup
-                    .Where(c => !pair.Contains(c.GridPoint));
+                IEnumerable<Cell> cellsOutsideSet = cellGroup
+                    .Where(c => !set.Contains(c.GridPoint));
 
-                IEnumerable<int> notesToRemove = notesByPoint[pair.First()];
-                IEnumerable<Elimination> partialEliminations = nonPairedCells.SelectMany(c =>
+                IEnumerable<int> notesToRemove = notesByPoint[set.First()];
+                IEnumerable<Elimination> partialEliminations = cellsOutsideSet.SelectMany(c =>
                 {
                     var eliminatedCellNotes = notesToRemove.Where(note => c.Notes.Contains(note));
                     return eliminatedCellNotes.Select(note => new Elimination(c.Row, c.Column, note));
@@ -92,52 +114,6 @@ public class NakedSubsetStrategy : EliminationStrategyBase
                 eliminations.AddRange(partialEliminations);
             }
         }
-        return eliminations;
-    }
-
-
-    private IEnumerable<Elimination> Eliminate(Grid sudoku, Func<Cell, int> groupBy)
-    {
-        List<Elimination> eliminations = new List<Elimination>();
-        List<Cell> cells = sudoku.GetCellsAsList();
-        IEnumerable<Cell> emptyCells = cells.Where(cell => cell.Number is null);
-
-        //int setSize = 2;
-        var cellGroups = emptyCells.GroupBy(groupBy);
-        foreach (var cellGroup in cellGroups)
-        {
-            //Dictionary<GridPoint, IEnumerable<int>> notesByPoint =
-            //    cellGroup.ToDictionary(c => c.GridPoint, c => c.Notes);
-            //IEnumerable<GridPoint> points = cellGroup.Select(c => c.GridPoint);
-            //var pairs = new Math.Combinatorics().GetAllSubsets(points, setSize);
-            //var pairsWithSameNotes = pairs.Where(pair =>
-            //{
-            //    var notes1 = notesByPoint[pair.First()];
-            //    var notes2 = notesByPoint[pair.Last()];
-
-            //    return notes1.Union(notes2).Count() == notes1.Count()
-            //        && notes1.Count() == notes2.Count()
-            //        && notes1.Count() > 0;
-            //});
-
-            //if (!pairsWithSameNotes.Any())
-            //    continue;
-
-            //HashSet<GridPoint> pair = pairsWithSameNotes.First();
-            //IEnumerable<Cell> nonPairedCells = cellGroup
-            //    .Where(c => !pair.Contains(c.GridPoint));
-
-            //IEnumerable<int> notesToRemove = notesByPoint[pair.First()];
-            //IEnumerable<Elimination> partialEliminations = nonPairedCells.SelectMany(c =>
-            //{
-            //    var eliminatedCellNotes = notesToRemove.Where(note => c.Notes.Contains(note));
-            //    return eliminatedCellNotes.Select(note => new Elimination(c.Row, c.Column, note));
-            //});
-            //eliminations.AddRange(partialEliminations);
-            var partialEliminations = IterateSubsets(cellGroup);
-            eliminations.AddRange(partialEliminations);
-        }
-
         return eliminations;
     }
 }

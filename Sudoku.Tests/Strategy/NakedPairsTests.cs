@@ -1,10 +1,11 @@
 using Sudoku.Services.Strategies;
 
-namespace Sudoku.Tests;
+namespace Sudoku.Tests.Strategy;
 
 public class NakedPairsTests
 {
     Grid _testGrid = SudokuGenerator.EmptySudoku();
+    NakedSubsetStrategy _strategy = new NakedSubsetStrategy(new StandardSudokuRules());
 
     [Fact]
     public void MultipleNakedPairs_EliminatesAll()
@@ -33,9 +34,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(2, 2), 2);
         _testGrid.SetCellNote(new(2, 2), 3);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
@@ -71,9 +70,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(2, 0), 2);
         _testGrid.SetCellNote(new(2, 0), 3);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
@@ -114,9 +111,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(8, 0), 1);
         _testGrid.SetCellNote(new(8, 0), 2);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
@@ -146,9 +141,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(1, 2), 2);
         _testGrid.SetCellNote(new(1, 2), 3);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
@@ -171,9 +164,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(8, 0), 1);
         _testGrid.SetCellNote(new(8, 0), 2);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
@@ -202,9 +193,7 @@ public class NakedPairsTests
         _testGrid.SetCellNote(new(0, 8), 1);
         _testGrid.SetCellNote(new(0, 8), 2);
 
-        NakedSubsetStrategy strategy = new NakedSubsetStrategy(new StandardSudokuRules());
-
-        IEnumerable<SudokuSolutionBase> solutions = strategy.Solve(_testGrid);
+        IEnumerable<Elimination> solutions = _strategy.Solve(_testGrid);
 
         List<Elimination> expectedSolutions = new List<Elimination>()
             {
