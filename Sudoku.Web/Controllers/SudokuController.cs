@@ -61,7 +61,8 @@ namespace Sudoku.Web.Controllers
         public ActionResult<Grid> LoadGame()
         {
             //Grid grid = _sudokuProvider.LoadLatestSudoku(_appConfig.SaveFolder).Grid;
-            Grid expertSudoku = SudokuGenerator.FromText(TestSudokuFixtures.ExpertSudoku.Sudoku);
+            //Grid expertSudoku = SudokuGenerator.FromText(TestSudokuFixtures.ExpertSudoku.Sudoku);
+            Grid expertSudoku = SudokuGenerator.FromText(TestSudokuFixtures.EvilSudoku.Sudoku);
             Grid grid = expertSudoku;
             return new OkObjectResult(grid);
         }

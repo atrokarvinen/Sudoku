@@ -78,12 +78,27 @@ public class HiddenSubsetStrategy : EliminationStrategyBase
         IEnumerable<int> setSizes = Enumerable.Range(2, maxSetSize - minSetSize + 1);
         foreach (int setSize in setSizes)
         {
+            IEnumerable<int> possibleNotes = cellGroup
+                .SelectMany(c => c.Notes)
+                .GroupBy(n => n)
+                .Where(noteGroup => noteGroup.Count() == setSize)
+                .Select(noteGroup => noteGroup.First());
+
+            bool canHavePairs = possibleNotes.Count() >= setSize;
+            if (!canHavePairs)
+                continue;
+
+            IEnumerable<Cell> possibleCells = cellGroup
+                .Where(c =>
+                {
+                    bool containsPossibleNotes = possibleNotes.Where(n => c.Notes.Contains(n)).Count() >= setSize;
+                    return containsPossibleNotes;
+                });
+            IEnumerable<GridPoint> possiblePoints = possibleCells.Select(c => c.GridPoint);
+            var sets = new Math.Combinatorics().GetAllSubsets(possiblePoints, setSize);
+
             Dictionary<GridPoint, IEnumerable<int>> notesByPoint =
-                cellGroup.ToDictionary(c => c.GridPoint, c => c.Notes);
-            IEnumerable<GridPoint> points = cellGroup
-                .Where(c => c.Notes.Count() > 1)
-                .Select(c => c.GridPoint);
-            var sets = new Math.Combinatorics().GetAllSubsets(points, setSize);
+                possibleCells.ToDictionary(c => c.GridPoint, c => c.Notes);
 
             // [1, 2, 3] - [1, 2]
             // [1 ,2]    - [1, 2]
@@ -91,12 +106,11 @@ public class HiddenSubsetStrategy : EliminationStrategyBase
             // [2 ,3]
             var setsWithSameNotes = sets.Select(set =>
             {
-                IEnumerable<int> notes1 = notesByPoint[set.First()];
-                IEnumerable<int> notes2 = notesByPoint[set.Last()];
+                IEnumerable<int> notes1 = notesByPoint[set.First()].Where(n => possibleNotes.Contains(n));
+                IEnumerable<int> notes2 = notesByPoint[set.Last()].Where(n => possibleNotes.Contains(n));
 
                 var noteSets1 = new Math.Combinatorics().GetAllSubsets(notes1, 2);
                 var noteSets2 = new Math.Combinatorics().GetAllSubsets(notes2, 2);
-                var noteUnion = noteSets1.Union(noteSets2);
 
                 List<HashSet<int>> hiddenPairs = new List<HashSet<int>>();
                 foreach (var notePair1 in noteSets1)
