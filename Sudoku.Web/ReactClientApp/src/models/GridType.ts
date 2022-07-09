@@ -1,18 +1,18 @@
-import { CellType } from "./CellType";
+import { CellUI } from "./CellUI";
 
-export declare type GridType = {
-    cells: CellType[][]
-}
+export type GridType = {
+  cells: CellUI[][];
+};
 
-export const EmptySudokuGrid = (): GridType => {
-    const sudokuGrid: GridType = { cells: [] };
-    for (let row = 0; row < 9; row++) {
-      const sudokuRow: CellType[] = [];
-      for (let column = 0; column < 9; column++) {
-        sudokuRow.push({ row: row, column: column });
-      }
-      sudokuGrid.cells.push(sudokuRow);
+export const emptySudokuGrid = (): GridType => {
+  const sudokuGrid: GridType = { cells: [] };
+  for (let row = 0; row < 9; row++) {
+    const sudokuRow: CellUI[] = [];
+    for (let column = 0; column < 9; column++) {
+      sudokuRow.push({ row: row, column: column });
     }
+    sudokuGrid.cells.push(sudokuRow);
+  }
 
-    return sudokuGrid;
-}
+  return sudokuGrid;
+};

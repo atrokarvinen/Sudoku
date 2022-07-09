@@ -33,6 +33,12 @@
   font-weight: bold;
   font-size: 2rem;
   text-align: center;
+
+  z-index: 2;
+  background-color: transparent;
+
+  padding: 0;
+  border: none;
 }
 
 .cell__textbox.user-filled {

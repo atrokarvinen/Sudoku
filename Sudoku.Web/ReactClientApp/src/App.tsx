@@ -2,9 +2,9 @@ import "./App.css";
 import { Layout } from "./layout/Layout";
 import Menu from "./components/Menu/Menu";
 import SudokuGame from "./components/SudokuGame/SudokuGame";
-import React from "react";
-import { CellType } from "./models/CellType";
-import { GridType, EmptySudokuGrid } from "./models/GridType";
+import { useState } from "react";
+import { CellUI } from "./models/CellUI";
+import { GridType, emptySudokuGrid } from "./models/GridType";
 
 function App() {
   const backendUrl = "https://localhost:44340";
@@ -15,9 +15,8 @@ function App() {
   const QUICK_SOLVE_NOTES = `${backendUrl}/${controllerName}/quick-solve-notes`;
   const SOLVE = `${backendUrl}/${controllerName}/solve`;
 
-  const [sudokuState, setSudokuState] = React.useState<GridType>(
-    EmptySudokuGrid()
-  );
+  const [isAddNoteToggled, setIsAddNoteToggled] = useState(false);
+  const [sudokuState, setSudokuState] = useState<GridType>(emptySudokuGrid());
 
   const saveGame = () => {
     console.log("Save game");
@@ -49,7 +48,7 @@ function App() {
   };
 
   const emptySudoku = () => {
-    setSudokuState(EmptySudokuGrid());
+    setSudokuState(emptySudokuGrid());
   };
 
   const solveNextStep = () => {
@@ -61,7 +60,7 @@ function App() {
       method: "POST",
     })
       .then((response: Response) => response.json())
-      .then((solvedCell: CellType) => {
+      .then((solvedCell: CellUI) => {
         const { row, column, number, notes } = solvedCell;
         console.log(
           `Solved step successfully. Next step: (${column}, ${row}) = ${number}`
@@ -106,7 +105,11 @@ function App() {
 
   return (
     <Layout>
-      <SudokuGame sudokuState={sudokuState} setSudokuState={setSudokuState} />
+      <SudokuGame
+        sudokuState={sudokuState}
+        setSudokuState={setSudokuState}
+        isAddNoteToggled={isAddNoteToggled}
+      />
       <Menu
         saveGame={saveGame}
         loadGame={loadGame}
@@ -114,6 +117,8 @@ function App() {
         solveNextStep={solveNextStep}
         solve={solve}
         quickSolveNotes={quickSolveNotes}
+        isAddNoteToggled={isAddNoteToggled}
+        toggleAddNote={() => setIsAddNoteToggled((prev) => !prev)}
       />
     </Layout>
   );

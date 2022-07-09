@@ -1,32 +1,38 @@
-import { CellType } from "../../models/CellType";
+import { CellUI } from "../../models/CellUI";
 import { GridType } from "../../models/GridType";
+import { Point } from "../../models/Point";
 import Cell from "./Cell";
 
 interface GridProps {
   sudokuGrid: GridType;
 
-  cellClicked: (cell: CellType) => void;
+  cellNumberChanged(point: Point, number: number): void;
+  cellErased(point: Point): void;
+  cellClicked(point: Point): void;
 }
 
-export default function Grid(props: GridProps) {
-  const { sudokuGrid } = props;
-
-  const rowCount = sudokuGrid.cells.length;
-  console.log("Rowcount:" + rowCount);
-
+export default function Grid({
+  sudokuGrid,
+  cellErased,
+  cellNumberChanged,
+  cellClicked,
+}: GridProps) {
   return (
     <div>
-      {sudokuGrid.cells.map((row: CellType[], rowIndex) => (
-        <div className="sudoku-row">
-          {row.map((cell: CellType, columnIndex) => {
+      {sudokuGrid.cells.map((row: CellUI[], rowIndex) => (
+        <div key={rowIndex} className="sudoku-row">
+          {row.map((cell: CellUI, columnIndex) => {
+            const point: Point = {
+              row: rowIndex,
+              column: columnIndex,
+            };
             return (
               <Cell
-                key={rowIndex * 100 + columnIndex}
-                row={rowIndex}
-                column={columnIndex}
-                number={cell.number}
-                cellClicked={props.cellClicked}
-                notes={cell.notes}
+                key={columnIndex}
+                cell={cell}
+                onNumberChanged={(number) => cellNumberChanged(point, number)}
+                onClicked={() => cellClicked(point)}
+                onErased={() => cellErased(point)}
               />
             );
           })}

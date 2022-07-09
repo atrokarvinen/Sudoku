@@ -1,37 +1,24 @@
-import { CellType } from "../../models/CellType";
+import { CellUI } from "../../models/CellUI";
 import "./Grid.css";
 
 interface CellProps {
-  row: number;
-  column: number;
-
-  number?: number;
-  isUserFilled?: boolean;
-
-  notes?: number[];
-
-  cellClicked: (cell: CellType) => void;
+  cell: CellUI;
+  onNumberChanged: (value: number) => void;
+  onErased(): void;
+  onClicked(): void;
 }
 
 export default function Cell(props: CellProps) {
-  const { number, isUserFilled, row, column, notes } = props;
+  const { cell, onNumberChanged, onClicked, onErased } = props;
+  const { number, isPrefilled, row, column, notes } = cell;
 
-  const numberStyle = isUserFilled ? "user-filled" : "pre-filled";
-  // const noteNumbers = notes ?? [];
-  // const hasNumber = number !== undefined;
+  const numberStyle = isPrefilled ? "pre-filled" : "user-filled";
+
   const enforcedLines = [3, 6];
   const enforceRow = enforcedLines.includes(row) ? "row-enforced" : "";
   const enforceColumn = enforcedLines.includes(column) ? "column-enforced" : "";
 
   const allowedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  // console.log(`Cell coordinates: (c x r) = (${column}, ${row})`);
-  const handleCellErase = () => {
-    const cellValue: CellType = { ...props };
-    cellValue.number = undefined;
-
-    props.cellClicked(cellValue);
-  };
 
   const getTextLastNumber = (text: string): number => {
     console.log(`Parsing last number of text '${text}'...`);
@@ -63,41 +50,35 @@ export default function Cell(props: CellProps) {
       }
     }
 
-    const cellValue: CellType = { ...props };
-    cellValue.number = numberInput;
-
-    props.cellClicked(cellValue);
+    onNumberChanged(numberInput);
   };
 
   const handleCellTextChanged = (text: string) => {
-    const isEmptyString: boolean = text.length === 0;
+    const isEmptyString = text.length === 0;
+    console.log("text changed");
     if (isEmptyString) {
-      handleCellErase();
+      onErased();
     } else {
       handleCellNumberInput(text);
     }
   };
 
-  const displayNotes = () => {
-    return (
-      <div className="cell-notes">
-        {notes?.map(note => <span className={`note-number-${note}`}>{note}</span>)}
-      </div>
-    )
-  }
-
   return (
-    <div className={`cell ${enforceRow} ${enforceColumn}`}>
-      {/* <button className="cell__button" type="button" onClick={() => props.cellClicked({ ...props })}>
-        <span style={{ color: numberColor }}>{number}</span>
-      </button> */}
-      {displayNotes()}
+    <div className={`cell ${enforceRow} ${enforceColumn}`} onClick={onClicked}>
       <input
         className={`cell__textbox ${numberStyle}`}
         type="text"
-        value={number ?? ''}
+        value={number ?? ""}
         onChange={(e) => handleCellTextChanged(e.target.value)}
+        readOnly={isPrefilled}
       />
+      <div className="cell-notes">
+        {notes?.map((note) => (
+          <span key={note} className={`note-number-${note}`}>
+            {note}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

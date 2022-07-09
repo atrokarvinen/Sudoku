@@ -1,17 +1,19 @@
 import "./Menu.css";
 
-import * as React from "react";
-
 export interface MenuProps {
-    saveGame: () => void
-    loadGame: () => void
-    emptySudoku: () => void
-    solveNextStep: () => void
-    solve: () => void
-    quickSolveNotes: () => void
+  saveGame: () => void;
+  loadGame: () => void;
+  emptySudoku: () => void;
+  solveNextStep: () => void;
+  solve: () => void;
+  quickSolveNotes: () => void;
+
+  isAddNoteToggled: boolean;
+  toggleAddNote(): void;
 }
 
 export default function Menu(props: MenuProps) {
+  const { isAddNoteToggled, toggleAddNote } = props;
   return (
     <div className="menu">
       <div className="menu__buttons">
@@ -21,6 +23,10 @@ export default function Menu(props: MenuProps) {
         <button onClick={props.solveNextStep}>Solve next step</button>
         <button onClick={props.solve}>Solve</button>
         <button onClick={props.quickSolveNotes}>Quick notes</button>
+
+        <button onClick={toggleAddNote}>
+          {isAddNoteToggled ? "Add number" : "Add note"}
+        </button>
       </div>
     </div>
   );
