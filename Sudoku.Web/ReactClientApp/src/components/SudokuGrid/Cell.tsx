@@ -77,10 +77,10 @@ export default function Cell({
     }
   };
 
-  const highlightCell =
-    isRowHighlighted || isColumnHighlighted ? "highlighted" : "";
-  const highlightNumber =
-    highlightedNumber === number ? "number-highlighted" : "";
+  const cellHighlighted = isRowHighlighted || isColumnHighlighted;
+  const highlightCell = cellHighlighted ? "highlighted" : "";
+  const isNumberHighlighted = highlightedNumber && highlightedNumber === number;
+  const highlightNumber = isNumberHighlighted ? "highlighted" : "";
 
   return (
     <div
@@ -98,7 +98,11 @@ export default function Cell({
         {notes?.map((note) => {
           const highlightNote = highlightedNumber === note ? "highlighted" : "";
           return (
-            <span key={note} className={`note-number ${highlightNote}`}>
+            <span
+              key={note}
+              style={{ gridArea: `number${note}` }}
+              className={`note-number ${highlightNote}`}
+            >
               {note}
             </span>
           );

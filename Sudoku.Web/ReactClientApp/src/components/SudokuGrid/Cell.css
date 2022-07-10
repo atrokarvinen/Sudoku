@@ -33,41 +33,48 @@
 }
 
 .cell__textbox.user-filled {
-  color: blue;
+  color: darkblue;
 }
 
 .cell__textbox.pre-filled {
   color: black;
 }
 
-.cell__textbox.number-highlighted {
-  color: aqua;
+.cell__textbox.highlighted {
+  background-color: skyblue;
+}
+
+.cell.highlighted {
+  background-color: lightblue;
+}
+
+.note-number.highlighted {
+  background-color: lightblue;
+  font-weight: bold;
 }
 
 .cell-notes {
   position: absolute;
   z-index: 1;
 
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
+  grid-template-areas: 
+    "number1 number2 number3"
+    "number4 number5 number6"
+    "number7 number8 number9";
+
+  justify-content: space-between;
+  align-content: space-between;
 
   width: 100%;
   height: 100%;
 }
 
 .note-number {
-  width: calc(100% / 3);
-  height: calc(100% / 3);
-  
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.note-number.highlighted {
-  color: aqua;
-}
-
-.cell.highlighted {
-  background-color: skyblue;
 }

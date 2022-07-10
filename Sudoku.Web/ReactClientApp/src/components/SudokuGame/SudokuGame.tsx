@@ -28,7 +28,8 @@ export function SudokuGame(props: SudokuGameProps) {
         sudokuRow.push({
           row: row,
           column: column,
-          number: isEmpty ? undefined : row + 1,
+          // number: isEmpty ? undefined : row + 1,
+          number: isEmpty ? undefined : Math.round(Math.random() * 9),
           // notes: isEmpty ? [1, 2, 3] : [],
           notes: isEmpty ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [],
           isPrefilled: !isEmpty,
