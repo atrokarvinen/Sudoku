@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { CellUI } from "../../models/CellUI";
 import { GridType } from "../../models/GridType";
 import { Point } from "../../models/Point";
 import Cell from "./Cell";
+import "./Grid.css";
 
 interface GridProps {
   sudokuGrid: GridType;
@@ -17,11 +19,20 @@ export default function Grid({
   cellNumberChanged,
   cellClicked,
 }: GridProps) {
+  // const [selectedNumber, setSelectedNumber] = useState<number | undefined>();
+  // const [selectedColumn, setSelectedColumn] = useState<number | undefined>();
+  // const [selectedRow, setSelectedRow] = useState<number | undefined>();
+
+  const [selectedCell, setSelectedCell] = useState<CellUI | undefined>();
+
   return (
     <div>
       {sudokuGrid.cells.map((row: CellUI[], rowIndex) => (
         <div key={rowIndex} className="sudoku-row">
           {row.map((cell: CellUI, columnIndex) => {
+            const isRowHighlighted = rowIndex === selectedCell?.row;
+            const isColumnHighlighted = columnIndex === selectedCell?.column;
+
             const point: Point = {
               row: rowIndex,
               column: columnIndex,
@@ -30,8 +41,19 @@ export default function Grid({
               <Cell
                 key={columnIndex}
                 cell={cell}
+                isRowHighlighted={isRowHighlighted}
+                isColumnHighlighted={isColumnHighlighted}
+                highlightedNumber={selectedCell?.number}
                 onNumberChanged={(number) => cellNumberChanged(point, number)}
-                onClicked={() => cellClicked(point)}
+                onClicked={() => {
+                  const { row, column } = point;
+                  const clickedCell = sudokuGrid.cells[row][column];
+                  // setSelectedNumber(clickedCell.number);
+                  // setSelectedRow(row);
+                  // setSelectedColumn(column);
+                  setSelectedCell(clickedCell);
+                  cellClicked(point);
+                }}
                 onErased={() => cellErased(point)}
               />
             );

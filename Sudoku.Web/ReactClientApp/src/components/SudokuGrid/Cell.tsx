@@ -1,15 +1,29 @@
 import { CellUI } from "../../models/CellUI";
-import "./Grid.css";
+import "./Cell.css";
 
 interface CellProps {
   cell: CellUI;
+
+  isRowHighlighted: boolean;
+  isColumnHighlighted: boolean;
+  highlightedNumber?: number;
+
   onNumberChanged: (value: number) => void;
   onErased(): void;
   onClicked(): void;
 }
 
-export default function Cell(props: CellProps) {
-  const { cell, onNumberChanged, onClicked, onErased } = props;
+export default function Cell({
+  cell,
+
+  isRowHighlighted,
+  isColumnHighlighted,
+  highlightedNumber,
+
+  onNumberChanged,
+  onClicked,
+  onErased,
+}: CellProps) {
   const { number, isPrefilled, row, column, notes } = cell;
 
   const numberStyle = isPrefilled ? "pre-filled" : "user-filled";
@@ -63,21 +77,32 @@ export default function Cell(props: CellProps) {
     }
   };
 
+  const highlightCell =
+    isRowHighlighted || isColumnHighlighted ? "highlighted" : "";
+  const highlightNumber =
+    highlightedNumber === number ? "number-highlighted" : "";
+
   return (
-    <div className={`cell ${enforceRow} ${enforceColumn}`} onClick={onClicked}>
+    <div
+      className={`cell ${enforceRow} ${enforceColumn} ${highlightCell}`}
+      onClick={onClicked}
+    >
       <input
-        className={`cell__textbox ${numberStyle}`}
+        className={`cell__textbox ${numberStyle} ${highlightNumber}`}
         type="text"
         value={number ?? ""}
         onChange={(e) => handleCellTextChanged(e.target.value)}
         readOnly={isPrefilled}
       />
       <div className="cell-notes">
-        {notes?.map((note) => (
-          <span key={note} className={`note-number-${note}`}>
-            {note}
-          </span>
-        ))}
+        {notes?.map((note) => {
+          const highlightNote = highlightedNumber === note ? "highlighted" : "";
+          return (
+            <span key={note} className={`note-number ${highlightNote}`}>
+              {note}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
