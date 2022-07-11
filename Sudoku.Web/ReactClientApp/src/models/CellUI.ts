@@ -3,7 +3,7 @@ export type CellUI = {
   column: number;
 
   number?: number;
-  notes?: number[];
+  notes: number[];
 
   isPrefilled?: boolean;
 };

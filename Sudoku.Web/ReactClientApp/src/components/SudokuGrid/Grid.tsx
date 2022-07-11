@@ -19,10 +19,6 @@ export default function Grid({
   cellNumberChanged,
   cellClicked,
 }: GridProps) {
-  // const [selectedNumber, setSelectedNumber] = useState<number | undefined>();
-  // const [selectedColumn, setSelectedColumn] = useState<number | undefined>();
-  // const [selectedRow, setSelectedRow] = useState<number | undefined>();
-
   const [selectedCell, setSelectedCell] = useState<CellUI | undefined>();
 
   return (
@@ -48,9 +44,6 @@ export default function Grid({
                 onClicked={() => {
                   const { row, column } = point;
                   const clickedCell = sudokuGrid.cells[row][column];
-                  // setSelectedNumber(clickedCell.number);
-                  // setSelectedRow(row);
-                  // setSelectedColumn(column);
                   setSelectedCell(clickedCell);
                   cellClicked(point);
                 }}

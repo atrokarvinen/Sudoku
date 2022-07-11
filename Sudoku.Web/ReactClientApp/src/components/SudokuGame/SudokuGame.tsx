@@ -11,11 +11,15 @@ export interface SudokuGameProps {
   isAddNoteToggled: boolean;
 }
 
-export function SudokuGame(props: SudokuGameProps) {
-  const { sudokuState, setSudokuState } = props;
+export function SudokuGame({
+  isAddNoteToggled,
+  sudokuState,
+  setSudokuState,
+}: SudokuGameProps) {
   const [selectedCell, setSelectedCell] = useState<CellUI | undefined>({
     row: 0,
     column: 0,
+    notes: [],
   });
   console.log(`Selected cell: (${selectedCell?.column}, ${selectedCell?.row})`);
 
@@ -38,7 +42,6 @@ export function SudokuGame(props: SudokuGameProps) {
       sudokuGrid.cells.push(sudokuRow);
     }
 
-    printSudoku(sudokuGrid);
     setSudokuState(sudokuGrid);
   };
 
@@ -56,6 +59,16 @@ export function SudokuGame(props: SudokuGameProps) {
         cellRow.map((cellColumn) => {
           if (cellColumn.row !== row || cellColumn.column !== column)
             return cellColumn;
+
+          if (isAddNoteToggled) {
+            const noteExists = !!cellColumn.notes.find((n) => n === number);
+            return {
+              ...cellColumn,
+              notes: noteExists
+                ? cellColumn.notes.filter((n) => n !== number)
+                : [...cellColumn.notes, number],
+            };
+          }
           return {
             ...cellColumn,
             number: number,
@@ -92,16 +105,6 @@ export function SudokuGame(props: SudokuGameProps) {
     const { row, column } = point;
     const clickedCell = sudokuState.cells[row][column];
     setSelectedCell(clickedCell);
-  };
-
-  const printSudoku = (sudoku: GridType) => {
-    for (let row = 0; row < sudoku.cells.length; row++) {
-      let rowStr = "";
-      for (let column = 0; column < sudoku.cells[row].length; column++) {
-        rowStr = rowStr + sudoku.cells[row][column].number;
-      }
-      console.log(rowStr);
-    }
   };
 
   return (
