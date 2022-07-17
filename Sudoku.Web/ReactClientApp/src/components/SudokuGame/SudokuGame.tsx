@@ -1,27 +1,31 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CellUI } from "../../models/CellUI";
 import { GridType } from "../../models/GridType";
 import { Point } from "../../models/Point";
+import { useAppDispatch } from "../../redux/store";
+import {
+  noteAdded,
+  numberAdded,
+  numberRemoved,
+  sudokuFilled,
+} from "../../redux/sudokuSlice";
 import Grid from "../SudokuGrid/Grid";
 
 export interface SudokuGameProps {
   sudokuState: GridType;
-  setSudokuState: (sudokuState: GridType) => void;
-
   isAddNoteToggled: boolean;
 }
 
-export function SudokuGame({
-  isAddNoteToggled,
-  sudokuState,
-  setSudokuState,
-}: SudokuGameProps) {
+export function SudokuGame({ isAddNoteToggled, sudokuState }: SudokuGameProps) {
+  const dispatch = useAppDispatch();
+
   const [selectedCell, setSelectedCell] = useState<CellUI | undefined>({
     row: 0,
     column: 0,
     notes: [],
   });
-  console.log(`Selected cell: (${selectedCell?.column}, ${selectedCell?.row})`);
+  // console.log(`Selected cell: (${selectedCell?.column}, ${selectedCell?.row})`);
+  // console.log("[SudokuGame] isAddNoteToggled: " + isAddNoteToggled);
 
   const populateSudoku = () => {
     const sudokuGrid: GridType = { cells: [] };
@@ -42,63 +46,43 @@ export function SudokuGame({
       sudokuGrid.cells.push(sudokuRow);
     }
 
-    setSudokuState(sudokuGrid);
+    dispatch(sudokuFilled(sudokuGrid));
   };
 
   useEffect(() => {
-    populateSudoku();
+    // populateSudoku();
   }, []);
 
-  const cellNumberChanged = (point: Point, number: number) => {
-    const { row, column } = point;
-    console.log(`cell (${column}, ${row}) was changed. New value: ${number}`);
+  const cellNumberChanged = useCallback(
+    (point: Point, number: number) => {
+      const { row, column } = point;
+      console.log(
+        `cell (${column}, ${row}) ${
+          isAddNoteToggled ? "note" : "number"
+        } was changed. New value: ${number}`
+      );
 
-    const newSudokuState: GridType = {
-      ...sudokuState,
-      cells: sudokuState.cells.map((cellRow) =>
-        cellRow.map((cellColumn) => {
-          if (cellColumn.row !== row || cellColumn.column !== column)
-            return cellColumn;
+      if (isAddNoteToggled) {
+        dispatch(noteAdded({ row, column, number }));
+      } else {
+        dispatch(numberAdded({ row, column, number }));
+      }
+    },
+    [isAddNoteToggled]
+  );
 
-          if (isAddNoteToggled) {
-            const noteExists = !!cellColumn.notes.find((n) => n === number);
-            return {
-              ...cellColumn,
-              notes: noteExists
-                ? cellColumn.notes.filter((n) => n !== number)
-                : [...cellColumn.notes, number],
-            };
-          }
-          return {
-            ...cellColumn,
-            number: number,
-            notes: [],
-          };
-        })
-      ),
-    };
-
-    setSudokuState(newSudokuState);
-  };
+  if (selectedCell) {
+    const { row, column } = selectedCell;
+    console.log(
+      "selected cell notes: " + sudokuState.cells[row][column].notes.join(", ")
+    );
+  }
 
   const handleCellErased = (point: Point) => {
     const { row, column } = point;
+    console.log("erasing cell");
 
-    const newSudokuState: GridType = {
-      ...sudokuState,
-      cells: sudokuState.cells.map((cellRow) =>
-        cellRow.map((cellColumn) => {
-          if (cellColumn.row !== row || cellColumn.column !== column)
-            return cellColumn;
-          return {
-            ...cellColumn,
-            number: undefined,
-          };
-        })
-      ),
-    };
-
-    setSudokuState(newSudokuState);
+    dispatch(numberRemoved({ row, column }));
   };
 
   const handleCellClicked = (point: Point) => {

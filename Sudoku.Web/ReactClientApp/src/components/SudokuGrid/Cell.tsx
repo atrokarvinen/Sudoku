@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { CellUI } from "../../models/CellUI";
 import "./Cell.css";
 
@@ -26,61 +27,49 @@ export default function Cell({
 }: CellProps) {
   const { number, isPrefilled, row, column, notes } = cell;
 
+  const allowedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  const isSelected = isRowHighlighted && isColumnHighlighted;
+  const cellHighlighted = isRowHighlighted || isColumnHighlighted;
+  const highlightCell = cellHighlighted ? "highlighted" : "";
+  const isNumberHighlighted = highlightedNumber && highlightedNumber === number;
+  const highlightNumber = isNumberHighlighted ? "highlighted" : "";
   const numberStyle = isPrefilled ? "pre-filled" : "user-filled";
 
   const enforcedLines = [3, 6];
   const enforceRow = enforcedLines.includes(row) ? "row-enforced" : "";
   const enforceColumn = enforcedLines.includes(column) ? "column-enforced" : "";
 
-  const allowedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  useEffect(() => {
+    if (isSelected) {
+      document.addEventListener("keydown", keydownHandler);
+    }
 
-  const getTextLastNumber = (text: string): number => {
-    console.log(`Parsing last number of text '${text}'...`);
-    const lastLetter = text[text.length - 1];
-    const lastNumber = +lastLetter;
-    console.log(`Parsed last number: ${lastNumber}`);
-    return lastNumber;
-  };
+    return () => {
+      if (isSelected) {
+        console.log("remove event handler");
+        document.removeEventListener("keydown", keydownHandler);
+      }
+    };
+  }, [isSelected, onNumberChanged]);
 
-  const handleCellNumberInput = (text: string) => {
-    let numberInput: number = +text;
+  const keydownHandler = (ev: KeyboardEvent) => {
+    if (isPrefilled) return;
 
-    if (isNaN(numberInput)) {
-      console.log(`Input '${text}' is not a number`);
+    // console.log(`key '${ev.key}' pressed`);
+    if (ev.key === "Backspace") {
+      onErased();
       return;
     }
 
-    if (!allowedNumbers.includes(numberInput)) {
-      console.log(
-        `Input '${numberInput}' is not a valid number integer in range [1...9]. Attempting to parse the last number of the text as input...`
-      );
-
-      numberInput = getTextLastNumber(text);
-      if (!allowedNumbers.includes(numberInput)) {
-        console.log(
-          `Input '${numberInput}' is still not a valid number integer in range [1...9]`
-        );
-        return;
-      }
-    }
+    const numberInput = +ev.key;
+    if (Number.isNaN(numberInput) || !allowedNumbers.includes(numberInput))
+      return;
 
     onNumberChanged(numberInput);
   };
 
-  const handleCellTextChanged = (text: string) => {
-    const isEmptyString = text.length === 0;
-    console.log("text changed");
-    if (isEmptyString) {
-      onErased();
-    } else {
-      handleCellNumberInput(text);
-    }
-  };
-
-  const cellHighlighted = isRowHighlighted || isColumnHighlighted;
-  const highlightCell = cellHighlighted ? "highlighted" : "";
-  const isNumberHighlighted = highlightedNumber && highlightedNumber === number;
-  const highlightNumber = isNumberHighlighted ? "highlighted" : "";
+  console.log("[Cell] updates");
 
   return (
     <div
@@ -91,8 +80,7 @@ export default function Cell({
         className={`cell__textbox ${numberStyle} ${highlightNumber}`}
         type="text"
         value={number ?? ""}
-        onChange={(e) => handleCellTextChanged(e.target.value)}
-        readOnly={isPrefilled}
+        readOnly={true}
       />
       <div className="cell-notes">
         {notes?.map((note) => {

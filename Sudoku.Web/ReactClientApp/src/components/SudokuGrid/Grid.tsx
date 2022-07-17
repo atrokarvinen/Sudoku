@@ -21,6 +21,8 @@ export default function Grid({
 }: GridProps) {
   const [selectedCell, setSelectedCell] = useState<CellUI | undefined>();
 
+  console.log("[Grid] updates");
+
   return (
     <div>
       {sudokuGrid.cells.map((row: CellUI[], rowIndex) => (
@@ -33,6 +35,7 @@ export default function Grid({
               row: rowIndex,
               column: columnIndex,
             };
+
             return (
               <Cell
                 key={columnIndex}

@@ -4,7 +4,10 @@ import Menu from "./components/Menu/Menu";
 import SudokuGame from "./components/SudokuGame/SudokuGame";
 import { useState } from "react";
 import { CellUI } from "./models/CellUI";
-import { GridType, emptySudokuGrid } from "./models/GridType";
+import { GridType } from "./models/GridType";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "./redux/store";
+import { sudokuEmptied } from "./redux/sudokuSlice";
 
 function App() {
   const backendUrl = "https://localhost:44340";
@@ -15,8 +18,14 @@ function App() {
   const QUICK_SOLVE_NOTES = `${backendUrl}/${controllerName}/quick-solve-notes`;
   const SOLVE = `${backendUrl}/${controllerName}/solve`;
 
+  const dispatch = useAppDispatch();
+  const sudokuState = useSelector((state: RootState) => state.sudoku);
+
   const [isAddNoteToggled, setIsAddNoteToggled] = useState(false);
-  const [sudokuState, setSudokuState] = useState<GridType>(emptySudokuGrid());
+
+  const setSudokuState = (sudoku: GridType) => {
+    console.log("Sudoku state set not implemented: " + sudoku);
+  };
 
   const saveGame = () => {
     console.log("Save game");
@@ -48,7 +57,7 @@ function App() {
   };
 
   const emptySudoku = () => {
-    setSudokuState(emptySudokuGrid());
+    dispatch(sudokuEmptied());
   };
 
   const solveNextStep = () => {
@@ -107,7 +116,6 @@ function App() {
     <Layout>
       <SudokuGame
         sudokuState={sudokuState}
-        setSudokuState={setSudokuState}
         isAddNoteToggled={isAddNoteToggled}
       />
       <Menu
